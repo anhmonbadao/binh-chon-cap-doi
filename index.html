@@ -60,13 +60,12 @@ a{color:cyan;font-weight:bold;text-decoration:none}
 </head>
 <body>
 
-<!-- 🔐 MÀN NHẬP CODE -->
 <div id="lock">
   <div class="video">
     <iframe 
       src="https://www.youtube.com/embed/nAP-Jk7fgHM?autoplay=1&mute=1&controls=1"
-      frameborder="0"
-      allow="autoplay; encrypted-media"
+      frameborder="0" 
+      allow="autoplay; encrypted-media" 
       allowfullscreen>
     </iframe>
   </div>
@@ -78,7 +77,6 @@ a{color:cyan;font-weight:bold;text-decoration:none}
   <button onclick="unlock()">Vào</button>
 </div>
 
-<!-- 🌐 NỘI DUNG WEB -->
 <div id="main" style="display:none">
 
 <h1>💖 Bình chọn cặp đôi 💖</h1>
@@ -131,7 +129,8 @@ const USER_CODE="anhmontongtai";
 const ADMIN_CODE="anhmonthongminh";
 const today=new Date().toDateString();
 
-let adminTaken=JSON.parse(localStorage.getItem("adminTaken")||"false");
+// Kiểm tra xem mã Admin đã bị ai dùng chưa
+let adminTaken=localStorage.getItem("adminTaken") === "true";
 
 let user=JSON.parse(localStorage.getItem("user")||"null");
 if(!user||user.date!==today){
@@ -149,25 +148,26 @@ let couples=JSON.parse(localStorage.getItem("couples")||"[]");
 let players=JSON.parse(localStorage.getItem("players")||"[]");
 
 function unlock(){
-  const input=codeInput.value.trim();
+  const input=document.getElementById("codeInput").value.trim();
 
-  if(input===ADMIN_CODE){
-    if(adminTaken){
-      alert("Code admin đã được sử dụng!");
+  if(input === ADMIN_CODE){
+    // CHỈ CHO PHÉP NẾU: Chưa ai dùng mã này HOẶC chính bạn đã là Admin từ trước
+    if(adminTaken && !user.isAdmin){
+      alert("Mã Admin này đã được sử dụng rồi!");
       return;
     }
-    user.isAdmin=true;
-    adminTaken=true;
-    localStorage.setItem("adminTaken","true");
+    user.isAdmin = true;
+    localStorage.setItem("adminTaken", "true");
+    alert("Chào Admin!");
   } 
-  else if(input!==USER_CODE){
+  else if(input !== USER_CODE){
     alert("Sai code!");
     return;
   }
 
-  localStorage.setItem("user",JSON.stringify(user));
-  lock.style.display="none";
-  main.style.display="block";
+  saveAll();
+  document.getElementById("lock").style.display="none";
+  document.getElementById("main").style.display="block";
   nextQuestion();
   render();
 }
@@ -181,6 +181,7 @@ function getTitle(){
 }
 
 function postLimit(){
+  if(user.isAdmin) return 999; 
   if(user.points>=1000) return 10;
   if(user.points>=100) return 5;
   return 2;
@@ -191,22 +192,25 @@ function nextQuestion(){
   a=Math.floor(Math.random()*10)+1;
   b=Math.floor(Math.random()*10)+1;
   op=["+","-","×"][Math.floor(Math.random()*3)];
-  correct=op==="+"?a+b:op==="-"?a-b:a*b;
-  question.innerText=`${a} ${op} ${b} = ?`;
+  const q = document.getElementById("question");
+  if(q) {
+      correct=op==="+"?a+b:op==="-"?a-b:a*b;
+      q.innerText=`${a} ${op} ${b} = ?`;
+  }
 }
 
 function checkAnswer(){
-  if(user.gameToday>=100){
-    gameInfo.innerText="Đã đạt giới hạn 100 điểm hôm nay!";
+  if(user.gameToday>=100 && !user.isAdmin){
+    document.getElementById("gameInfo").innerText="Đã đạt giới hạn 100 điểm hôm nay!";
     return;
   }
-  if(parseInt(answer.value)===correct){
+  const ans = document.getElementById("answer");
+  if(parseInt(ans.value)===correct){
     let gain=user.points>=1000?2:1;
-    if(user.gameToday+gain>100) gain=100-user.gameToday;
     user.points+=gain;
     user.gameToday+=gain;
   }
-  answer.value="";
+  ans.value="";
   saveAll();
   nextQuestion();
   render();
@@ -217,17 +221,17 @@ function addCouple(){
     alert("Hôm nay bạn đã hết lượt đăng!");
     return;
   }
-  const name=coupleInput.value.trim();
+  const name=document.getElementById("coupleInput").value.trim();
   if(!name) return;
   couples.push({name,votes:0});
   user.posts++;
-  coupleInput.value="";
+  document.getElementById("coupleInput").value="";
   saveAll();
   render();
 }
 
 function vote(i){
-  if(user.votes[i]) return;
+  if(user.votes[i] && !user.isAdmin) return;
   couples[i].votes++;
   user.votes[i]=true;
   saveAll();
@@ -235,33 +239,36 @@ function vote(i){
 }
 
 function render(){
-  profile.innerText=`Điểm: ${user.points} | ${getTitle()}`;
-  limitInfo.innerText=`Đã đăng ${user.posts}/${postLimit()} cặp hôm nay`;
-  gameInfo.innerText=`Mini game hôm nay: ${user.gameToday}/100 điểm`;
+  document.getElementById("profile").innerText=`Điểm: ${user.points} | ${getTitle()}`;
+  document.getElementById("limitInfo").innerText=`Đã đăng ${user.posts}/${user.isAdmin?'∞':postLimit()} cặp hôm nay`;
+  document.getElementById("gameInfo").innerText=`Mini game hôm nay: ${user.gameToday}/100 điểm`;
 
-  topPlayers.innerHTML="";
+  const tp = document.getElementById("topPlayers");
+  tp.innerHTML="";
   players=[...players.filter(p=>p.id!==today),{id:today,points:user.points}];
   players.sort((a,b)=>b.points-a.points).slice(0,5)
-    .forEach(p=>topPlayers.innerHTML+=`<div class="couple">❤️ ${p.points} điểm</div>`);
+    .forEach(p=>tp.innerHTML+=`<div class="couple">❤️ ${p.points} điểm</div>`);
 
-  topCouples.innerHTML="";
+  const tc = document.getElementById("topCouples");
+  tc.innerHTML="";
   couples.filter(c=>c.votes>0)
     .sort((a,b)=>b.votes-a.votes)
     .slice(0,3)
     .forEach((c,i)=>{
-      topCouples.innerHTML+=`
+      tc.innerHTML+=`
       <div class="couple rank${i+1}">
       ${["🥇 Siêu hợp đôi","🥈 Rất hợp đôi","🥉 Khá hợp đôi"][i]}<br>
       ${c.name} – ❤️ ${c.votes}
       </div>`;
     });
 
-  list.innerHTML="";
+  const lst = document.getElementById("list");
+  lst.innerHTML="";
   couples.forEach((c,i)=>{
-    list.innerHTML+=`
+    lst.innerHTML+=`
     <div class="couple">
     <b>${c.name}</b> ❤️ ${c.votes}<br>
-    <button ${user.votes[i]?"disabled":""} onclick="vote(${i})">
+    <button ${user.votes[i] && !user.isAdmin?"disabled":""} onclick="vote(${i})">
     ${user.votes[i]?"Đã vote":"Vote"}
     </button>
     </div>`;
