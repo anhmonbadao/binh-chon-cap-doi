@@ -2,348 +2,85 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bình chọn cặp đôi - Anhmon Tổng Tài</title>
+<title>Bình chọn cặp đôi</title>
 <style>
 body{
   background:#0e0e0e;
   color:#fff;
-  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family:Arial;
   max-width:900px;
   margin:auto;
-  padding:20px;
-  line-height: 1.6;
+  padding:20px
 }
-h1,h2{text-align:center; color: #ff69b4;}
+h1,h2{text-align:center}
 input,button{
   width:100%;
-  padding:12px;
-  margin:8px 0;
-  border-radius:8px;
-  border:none;
-  box-sizing: border-box;
-}
-input{
-  background: #262626;
-  color: #fff;
-  border: 1px solid #444;
+  padding:10px;
+  margin:6px 0;
+  border-radius:6px;
+  border:none
 }
 button{
   background:#ff69b4;
-  color: white;
   font-weight:bold;
-  cursor:pointer;
-  transition: 0.3s;
+  cursor:pointer
 }
-button:hover{ background: #ff1493; }
-button:disabled{background:#555; cursor: not-allowed;}
-
+button:disabled{background:#555}
 .box{
   background:#1c1c1c;
-  padding:15px;
-  border-radius:10px;
-  margin:15px 0;
-  border: 1px solid #333;
+  padding:12px;
+  border-radius:8px;
+  margin:12px 0
 }
 .couple{
   background:#262626;
-  padding:12px;
-  border-radius:8px;
-  margin:8px 0;
-  border-left: 4px solid #ff69b4;
+  padding:8px;
+  border-radius:6px;
+  margin:6px 0
 }
-.rank1{color:gold; font-size: 1.2em; border-left-color: gold;}
-.rank2{color:silver; border-left-color: silver;}
-.rank3{color:#cd7f32; border-left-color: #cd7f32;}
-
-a{color:cyan; font-weight:bold; text-decoration:none;}
-a:hover{text-decoration: underline;}
-
+.rank1{color:gold;font-weight:bold}
+.rank2{color:silver;font-weight:bold}
+.rank3{color:#cd7f32;font-weight:bold}
+a{color:cyan;font-weight:bold;text-decoration:none}
 .video{
   position:relative;
   padding-bottom:56.25%;
   height:0;
   overflow:hidden;
-  border-radius:12px;
-  margin-bottom:20px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  border-radius:10px;
+  margin-bottom:15px
 }
 .video iframe{
   position:absolute;
   top:0;left:0;
   width:100%;height:100%
 }
-.hint{color:#888; text-align:center; font-size:14px; margin-top: 10px;}
-#adminBadge {
-    background: gold;
-    color: black;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: bold;
-    display: none;
-}
+.hint{color:#aaa;text-align:center;font-size:14px}
 </style>
 </head>
 <body>
 
+<!-- 🔐 MÀN NHẬP CODE -->
 <div id="lock">
   <div class="video">
     <iframe 
       src="https://www.youtube.com/embed/nAP-Jk7fgHM?autoplay=1&mute=1"
-      frameborder="0" 
-      allow="autoplay; encrypted-media" 
+      frameborder="0"
+      allow="autoplay; encrypted-media"
       allowfullscreen>
     </iframe>
   </div>
 
-  <h2>Nhập mã xác thực</h2>
-  <p class="hint">Mã thành viên: <b>anhmontongtai</b></p>
+  <h2>Nhập code để vào web</h2>
+  <p class="hint">Code: <b>anhmontongtai</b></p>
 
-  <input type="text" id="codeInput" placeholder="Nhập mã vào đây...">
-  <button onclick="unlock()">Xác nhận vào Web</button>
-  <p id="lockError" style="color: #ff4d4d; text-align: center;"></p>
+  <input id="codeInput" placeholder="Nhập code">
+  <button onclick="unlock()">Vào</button>
 </div>
 
+<!-- 🌐 NỘI DUNG -->
 <div id="main" style="display:none">
 
-<h1>💖 Bình chọn cặp đôi 💖 <span id="adminBadge">ADMIN</span></h1>
+<h1>💖 Bình chọn cặp đôi 💖</h1>
 
-<p style="text-align:center">
-<a href="https://www.youtube.com/@anhmontongtai" target="_blank">
-🎬 Ghé thăm kênh YouTube Anhmon Tổng Tài
-</a>
-</p>
-
-<div class="box">
-<h2>👤 Thông tin cá nhân</h2>
-<p id="profile"></p>
-</div>
-
-<div class="box">
-<h2>🧮 Thử thách toán học (Kiếm điểm)</h2>
-<p id="question" style="font-size: 20px; font-weight: bold; text-align: center;"></p>
-<input type="number" id="answer" placeholder="Đáp án là gì?">
-<button onclick="checkAnswer()">Gửi đáp án</button>
-<p id="gameInfo" style="font-size: 0.9em; color: #bbb;"></p>
-</div>
-
-<div class="box">
-<h2>🔥 Bảng xếp hạng người chơi</h2>
-<div id="topPlayers"></div>
-</div>
-
-<div class="box">
-<h2>➕ Đề xuất cặp đôi mới</h2>
-<input type="text" id="coupleInput" placeholder="Tên cặp đôi (VD: Anh A - Chị B)">
-<button onclick="addCouple()">Đăng đề xuất</button>
-<p id="limitInfo" style="font-size: 0.8em;"></p>
-</div>
-
-<div class="box">
-<h2>🏆 Top 3 cặp đôi được yêu thích nhất</h2>
-<div id="topCouples"></div>
-</div>
-
-<div class="box">
-<h2>📋 Danh sách tất cả cặp đôi</h2>
-<div id="list"></div>
-</div>
-
-</div>
-
-<script>
-// CẤU HÌNH MÃ
-const USER_CODE = "anhmontongtai";
-const ADMIN_CODE = "anhmonbadao"; // MÃ ADMIN MỚI CỦA BẠN
-const today = new Date().toDateString();
-
-// KHỞI TẠO DỮ LIỆU
-let adminUsed = localStorage.getItem("adminUsed") === "true";
-let user = JSON.parse(localStorage.getItem("user") || "null");
-let couples = JSON.parse(localStorage.getItem("couples") || "[]");
-let players = JSON.parse(localStorage.getItem("players") || "[]");
-
-// Nếu chưa có user hoặc qua ngày mới, reset các giới hạn ngày
-if(!user || user.date !== today){
-  user = {
-    points: user ? user.points : 0,
-    gameToday: 0,
-    date: today,
-    votes: {},
-    posts: 0,
-    isAdmin: user ? user.isAdmin : false
-  };
-}
-
-// HÀM MỞ KHÓA
-function unlock(){
-  const input = document.getElementById("codeInput").value.trim();
-  const errorMsg = document.getElementById("lockError");
-
-  if(input === ADMIN_CODE){
-    // KIỂM TRA: Nếu mã đã dùng và bạn không phải là người đang giữ quyền admin đó
-    if(adminUsed && !user.isAdmin){
-      errorMsg.innerText = "❌ Mã Admin này đã được sử dụng bởi người khác!";
-      return;
-    }
-    // Nếu chưa ai dùng, kích hoạt quyền admin cho bạn
-    user.isAdmin = true;
-    localStorage.setItem("adminUsed", "true");
-    alert("Kích hoạt quyền ADMIN thành công!");
-  } 
-  else if(input === USER_CODE){
-    // Vào với tư cách thành viên
-  }
-  else {
-    errorMsg.innerText = "❌ Mã không chính xác!";
-    return;
-  }
-
-  saveAll();
-  enterWeb();
-}
-
-function enterWeb(){
-  document.getElementById("lock").style.display = "none";
-  document.getElementById("main").style.display = "block";
-  if(user.isAdmin) document.getElementById("adminBadge").style.display = "inline";
-  nextQuestion();
-  render();
-}
-
-// CÁC HÀM LOGIC GAME
-function getTitle(){
-  if(user.isAdmin) return "ADMIN TỔNG TÀI 👑";
-  if(user.points >= 1000) return "Cánh tay phải đắc lực";
-  if(user.points >= 100) return "Sống lâu trăm tuổi";
-  if(user.points >= 50) return "Người thông minh kì cựu 🌱";
-  return "Thành viên mới";
-}
-
-function postLimit(){
-  if(user.isAdmin) return 999; // Admin không giới hạn
-  if(user.points >= 1000) return 10;
-  if(user.points >= 100) return 5;
-  return 2;
-}
-
-let a, b, op, correct;
-function nextQuestion(){
-  a = Math.floor(Math.random() * 10) + 1;
-  b = Math.floor(Math.random() * 10) + 1;
-  const ops = ["+", "-", "×"];
-  op = ops[Math.floor(Math.random() * ops.length)];
-  correct = op === "+" ? a + b : op === "-" ? a - b : a * b;
-  document.getElementById("question").innerText = `${a} ${op} ${b} = ?`;
-}
-
-function checkAnswer(){
-  const ansInput = document.getElementById("answer");
-  if(user.gameToday >= 100 && !user.isAdmin){
-    alert("Bạn đã hết lượt kiếm điểm hôm nay!");
-    return;
-  }
-  
-  if(parseInt(ansInput.value) === correct){
-    let gain = user.points >= 1000 ? 2 : 1;
-    user.points += gain;
-    user.gameToday += gain;
-    alert("Chính xác! + " + gain + " điểm");
-  } else {
-    alert("Sai rồi, cố gắng nhé!");
-  }
-  
-  ansInput.value = "";
-  saveAll();
-  nextQuestion();
-  render();
-}
-
-function addCouple(){
-  if(user.posts >= postLimit()){
-    alert("Bạn đã hết lượt đăng cặp đôi hôm nay!");
-    return;
-  }
-  const name = document.getElementById("coupleInput").value.trim();
-  if(!name) return;
-  
-  couples.push({ name, votes: 0, id: Date.now() });
-  user.posts++;
-  document.getElementById("coupleInput").value = "";
-  saveAll();
-  render();
-}
-
-function vote(id){
-  // Tìm cặp đôi theo ID
-  const index = couples.findIndex(c => c.id === id);
-  if(user.votes[id] && !user.isAdmin) return;
-  
-  couples[index].votes++;
-  user.votes[id] = true;
-  saveAll();
-  render();
-}
-
-function deleteCouple(id){
-  if(!user.isAdmin) return;
-  if(confirm("Admin muốn xóa cặp đôi này?")){
-    couples = couples.filter(c => c.id !== id);
-    saveAll();
-    render();
-  }
-}
-
-function render(){
-  document.getElementById("profile").innerText = `Điểm: ${user.points} | Danh hiệu: ${getTitle()}`;
-  document.getElementById("limitInfo").innerText = `Hôm nay đã đăng: ${user.posts}/${user.isAdmin ? '∞' : postLimit()}`;
-  document.getElementById("gameInfo").innerText = `Tiến trình điểm hôm nay: ${user.gameToday}/100`;
-
-  // Top người chơi (mô phỏng bảng xếp hạng địa phương)
-  const topP = document.getElementById("topPlayers");
-  topP.innerHTML = "";
-  players = [...players.filter(p => p.id !== "You"), {id: "You", points: user.points}];
-  players.sort((a,b) => b.points - a.points).slice(0, 5)
-    .forEach(p => topP.innerHTML += `<div class="couple">👤 ${p.id === "You" ? "Bạn" : "Người chơi ẩn danh"}: ${p.points} điểm</div>`);
-
-  // Top cặp đôi
-  const topC = document.getElementById("topCouples");
-  topC.innerHTML = "";
-  [...couples].sort((a,b) => b.votes - a.votes).slice(0, 3)
-    .forEach((c, i) => {
-      if(c.votes > 0) {
-        topC.innerHTML += `
-        <div class="couple rank${i+1}">
-          ${["🥇 Hạng nhất","🥈 Hạng nhì","🥉 Hạng ba"][i]}<br>
-          <b>${c.name}</b> – ❤️ ${c.votes} lượt bình chọn
-        </div>`;
-      }
-    });
-
-  // Danh sách đầy đủ
-  const listDiv = document.getElementById("list");
-  listDiv.innerHTML = "";
-  couples.forEach((c) => {
-    listDiv.innerHTML += `
-    <div class="couple">
-      <b>${c.name}</b> ❤️ ${c.votes}
-      <div style="display:flex; gap: 5px; margin-top:5px;">
-        <button ${user.votes[c.id] && !user.isAdmin ? "disabled" : ""} onclick="vote(${c.id})" style="flex:3">
-          ${user.votes[c.id] ? "Đã bình chọn" : "Bình chọn"}
-        </button>
-        ${user.isAdmin ? `<button onclick="deleteCouple(${c.id})" style="flex:1; background:red;">Xóa</button>` : ""}
-      </div>
-    </div>`;
-  });
-}
-
-function saveAll(){
-  localStorage.setItem("user", JSON.stringify(user));
-  localStorage.setItem("couples", JSON.stringify(couples));
-  localStorage.setItem("players", JSON.stringify(players));
-}
-</script>
-
-</body>
-</html>
+<p style=
