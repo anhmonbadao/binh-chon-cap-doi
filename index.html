@@ -4,31 +4,85 @@
 <meta charset="UTF-8">
 <title>Bình chọn cặp đôi</title>
 <style>
-body{background:#0e0e0e;color:#fff;font-family:Arial;max-width:900px;margin:auto;padding:20px}
+body{
+  background:#0e0e0e;
+  color:#fff;
+  font-family:Arial;
+  max-width:900px;
+  margin:auto;
+  padding:20px
+}
 h1,h2{text-align:center}
-input,button{width:100%;padding:10px;margin:5px 0;border-radius:6px;border:none}
-button{background:#ff69b4;font-weight:bold;cursor:pointer}
+input,button{
+  width:100%;
+  padding:10px;
+  margin:6px 0;
+  border-radius:6px;
+  border:none
+}
+button{
+  background:#ff69b4;
+  font-weight:bold;
+  cursor:pointer
+}
 button:disabled{background:#555}
-.box{background:#1c1c1c;padding:12px;border-radius:8px;margin:12px 0}
-.couple{background:#262626;padding:8px;border-radius:6px;margin:6px 0}
+.box{
+  background:#1c1c1c;
+  padding:12px;
+  border-radius:8px;
+  margin:12px 0
+}
+.couple{
+  background:#262626;
+  padding:8px;
+  border-radius:6px;
+  margin:6px 0
+}
 .rank1{color:gold;font-weight:bold}
 .rank2{color:silver;font-weight:bold}
 .rank3{color:#cd7f32;font-weight:bold}
-.badge{color:#00ff99;font-weight:bold}
 a{color:cyan;font-weight:bold;text-decoration:none}
+.video{
+  position:relative;
+  padding-bottom:56.25%;
+  height:0;
+  overflow:hidden;
+  border-radius:10px;
+  margin-bottom:15px
+}
+.video iframe{
+  position:absolute;
+  top:0;left:0;
+  width:100%;height:100%
+}
+.hint{color:#aaa;text-align:center;font-size:14px}
 </style>
 </head>
 <body>
 
+<!-- 🔐 MÀN NHẬP CODE -->
 <div id="lock">
+  <div class="video">
+    <iframe 
+      src="https://www.youtube.com/embed/nAP-Jk7fgHM?autoplay=1&mute=1&controls=1"
+      frameborder="0"
+      allow="autoplay; encrypted-media"
+      allowfullscreen>
+    </iframe>
+  </div>
+
   <h2>Nhập code để vào web</h2>
-  <input id="codeInput">
+  <p class="hint">Code: <b>anhmontongtai</b></p>
+
+  <input id="codeInput" placeholder="Nhập code ở đây">
   <button onclick="unlock()">Vào</button>
 </div>
 
+<!-- 🌐 NỘI DUNG WEB -->
 <div id="main" style="display:none">
 
 <h1>💖 Bình chọn cặp đôi 💖</h1>
+
 <p style="text-align:center">
 <a href="https://www.youtube.com/@anhmontongtai" target="_blank">
 👉 Qua kênh YouTube anhmon tổng tài 👈
@@ -95,7 +149,7 @@ let couples=JSON.parse(localStorage.getItem("couples")||"[]");
 let players=JSON.parse(localStorage.getItem("players")||"[]");
 
 function unlock(){
-  const input=codeInput.value;
+  const input=codeInput.value.trim();
 
   if(input===ADMIN_CODE){
     if(adminTaken){
@@ -105,7 +159,8 @@ function unlock(){
     user.isAdmin=true;
     adminTaken=true;
     localStorage.setItem("adminTaken","true");
-  } else if(input!==USER_CODE){
+  } 
+  else if(input!==USER_CODE){
     alert("Sai code!");
     return;
   }
@@ -145,9 +200,8 @@ function checkAnswer(){
     gameInfo.innerText="Đã đạt giới hạn 100 điểm hôm nay!";
     return;
   }
-
   if(parseInt(answer.value)===correct){
-    let gain= user.points>=1000 ? 2 : 1;
+    let gain=user.points>=1000?2:1;
     if(user.gameToday+gain>100) gain=100-user.gameToday;
     user.points+=gain;
     user.gameToday+=gain;
@@ -191,19 +245,26 @@ function render(){
     .forEach(p=>topPlayers.innerHTML+=`<div class="couple">❤️ ${p.points} điểm</div>`);
 
   topCouples.innerHTML="";
-  couples.filter(c=>c.votes>0).sort((a,b)=>b.votes-a.votes).slice(0,3)
+  couples.filter(c=>c.votes>0)
+    .sort((a,b)=>b.votes-a.votes)
+    .slice(0,3)
     .forEach((c,i)=>{
-      topCouples.innerHTML+=`<div class="couple rank${i+1}">
+      topCouples.innerHTML+=`
+      <div class="couple rank${i+1}">
       ${["🥇 Siêu hợp đôi","🥈 Rất hợp đôi","🥉 Khá hợp đôi"][i]}<br>
-      ${c.name} – ❤️ ${c.votes}</div>`;
+      ${c.name} – ❤️ ${c.votes}
+      </div>`;
     });
 
   list.innerHTML="";
   couples.forEach((c,i)=>{
-    list.innerHTML+=`<div class="couple">
+    list.innerHTML+=`
+    <div class="couple">
     <b>${c.name}</b> ❤️ ${c.votes}<br>
     <button ${user.votes[i]?"disabled":""} onclick="vote(${i})">
-    ${user.votes[i]?"Đã vote":"Vote"}</button></div>`;
+    ${user.votes[i]?"Đã vote":"Vote"}
+    </button>
+    </div>`;
   });
 }
 
