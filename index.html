@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Bình chọn cặp đôi</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .hidden {
+      display: none;
+    }
+    .box {
+      background: #fff;
+      padding: 15px;
+      margin: 15px auto;
+      max-width: 520px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,.1);
+    }
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button.vote {
+      background: #ff6fae;
+      color: #fff;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin: 6px 0;
+    }
+  </style>
+</head>
+<body>
+
+<h1>💖 Bình chọn cặp đôi 💖</h1>
+
+<!-- MÀN NHẬP CODE -->
+<div id="login" class="box">
+  <h3>🔐 Nhập code để vào</h3>
+  <input id="codeInput" placeholder="Nhập code..." />
+  <button onclick="checkCode()">Vào</button>
+  <p id="error" style="color:red"></p>
+</div>
+
+<!-- TRANG CHÍNH -->
+<div id="main" class="hidden">
+
+  <!-- TOP XẾP HẠNG -->
+  <div class="box">
+    <h2>🏆 Top cặp đôi</h2>
+    <div id="top"></div>
+  </div>
+
+  <!-- ADMIN THÊM CẶP ĐÔI -->
+  <div class="box">
+    <h3>👑 Thêm cặp đôi (admin)</h3>
+    <input id="coupleInput" placeholder="Ví dụ: Minh × Vy" />
+    <button onclick="addCouple()">Thêm</button>
+  </div>
+
+  <!-- DANH SÁCH CẶP ĐÔI -->
+  <div id="couples"></div>
+</div>
+
+<script>
+  /* ===== CẤU HÌNH ===== */
+
+  // CODE BẮT BUỘC NHẬP ĐỂ VÀO WEB
+  const ACCESS_CODE = "anhmontongtai";
+
+  // CÁC CẶP ĐÔI ADMIN TẠO SẴN
+  const ADMIN_COUPLES = [
+    "Minh × Vy",
+    "An × Linh",
+    "Khôi × Ngọc"
+  ];
+
+  /* ==================== */
+
+  let voted = JSON.parse(localStorage.getItem("voted") || "{}");
+  let couples = JSON.parse(localStorage.getItem("couples") || "null");
+
+  // LẦN ĐẦU VÀO WEB
+  if (!couples) {
+    couples = ADMIN_COUPLES.map(name => ({
+      name: name,
+      votes: 0,
+      admin: true
+    }));
+    save();
+  }
+
+  function checkCode() {
+    const v = document.getElementById("codeInput").value;
+    if (v === ACCESS_CODE) {
+      document.getElementById("login").classList.add("hidden");
+      document.getElementById("main").classList.remove("hidden");
+      render();
+    } else {
+      document.getElementById("error").innerText = "Sai code";
+    }
+  }
+
+  function save() {
+    localStorage.setItem("couples", JSON.stringify(couples));
+    localStorage.setItem("voted", JSON.stringify(voted));
+  }
+
+  function addCouple() {
+    const name = document.getElementById("coupleInput").value.trim();
+    if (!name) return;
+    couples.push({
+      name: name,
+      votes: 0,
+      admin: false
+    });
+    document.getElementById("coupleInput").value = "";
+    save();
+    render();
+  }
+
+  function vote(i) {
+    // CHỈ ĐƯỢC VOTE 1 LẦN / 1 CẶP
+    if (voted[i]) return;
+    couples[i].votes++;
+    voted[i] = true;
+    save();
+    render();
+  }
+
+  function render() {
+    /* TOP XẾP HẠNG */
+    const topDiv = document.getElementById("top");
+    topDiv.innerHTML = "";
+    [...couples]
+      .sort((a, b) => b.votes - a.votes)
+      .slice(0, 5)
+      .forEach((c, idx) => {
+        topDiv.innerHTML +=
+          `${idx + 1}. ${c.name} – ❤️ ${c.votes}<br>`;
+      });
+
+    /* DANH SÁCH CẶP ĐÔI */
+    const div = document.getElementById("couples");
+    div.innerHTML = "";
+    couples.forEach((c, i) => {
+      const box = document.createElement("div");
+      box.className = "box";
+      box.innerHTML = `
+        <b>${c.name}</b><br><br>
+        ❤️ ${c.votes} lượt bình chọn<br><br>
+        <button class="vote"
+          onclick="vote(${i})"
+          ${voted[i] ? "disabled" : ""}>
+          ${voted[i] ? "Đã bình chọn" : "Bình chọn"}
+        </button>
+      `;
+      div.appendChild(box);
+    });
+  }
+</script>
+
+</body>
+</html>
