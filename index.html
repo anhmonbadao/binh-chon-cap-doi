@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>Bình chọn cặp đôi</title>
 <style>
-body{background:#0d0d0d;color:#fff;font-family:Arial;max-width:900px;margin:auto;padding:20px}
+body{background:#0e0e0e;color:#fff;font-family:Arial;max-width:900px;margin:auto;padding:20px}
 h1,h2{text-align:center}
 input,button{width:100%;padding:10px;margin:5px 0;border-radius:6px;border:none}
 button{background:#ff69b4;font-weight:bold;cursor:pointer}
@@ -36,7 +36,7 @@ a{color:cyan;font-weight:bold;text-decoration:none}
 </p>
 
 <div class="box">
-<h2>👤 Hồ sơ của bạn</h2>
+<h2>👤 Hồ sơ</h2>
 <p id="profile"></p>
 </div>
 
@@ -73,27 +73,52 @@ a{color:cyan;font-weight:bold;text-decoration:none}
 </div>
 
 <script>
-const ACCESS_CODE="anhmontongtai";
+const USER_CODE="anhmontongtai";
+const ADMIN_CODE="anhmonthongminh";
 const today=new Date().toDateString();
+
+let adminTaken=JSON.parse(localStorage.getItem("adminTaken")||"false");
 
 let user=JSON.parse(localStorage.getItem("user")||"null");
 if(!user||user.date!==today){
-  user={points:user?user.points:0,gameToday:0,date:today,votes:{},posts:0};
+  user={
+    points:user?user.points:0,
+    gameToday:0,
+    date:today,
+    votes:{},
+    posts:0,
+    isAdmin:user?user.isAdmin:false
+  };
 }
 
 let couples=JSON.parse(localStorage.getItem("couples")||"[]");
 let players=JSON.parse(localStorage.getItem("players")||"[]");
 
 function unlock(){
-  if(codeInput.value===ACCESS_CODE){
-    lock.style.display="none";
-    main.style.display="block";
-    nextQuestion();
-    render();
-  } else alert("Sai code!");
+  const input=codeInput.value;
+
+  if(input===ADMIN_CODE){
+    if(adminTaken){
+      alert("Code admin đã được sử dụng!");
+      return;
+    }
+    user.isAdmin=true;
+    adminTaken=true;
+    localStorage.setItem("adminTaken","true");
+  } else if(input!==USER_CODE){
+    alert("Sai code!");
+    return;
+  }
+
+  localStorage.setItem("user",JSON.stringify(user));
+  lock.style.display="none";
+  main.style.display="block";
+  nextQuestion();
+  render();
 }
 
 function getTitle(){
+  if(user.isAdmin) return "ADMIN 👑";
   if(user.points>=1000) return "Cánh tay phải đắc lực";
   if(user.points>=100) return "Sống lâu trăm tuổi";
   if(user.points>=50) return "Người thông minh kì cựu 🌱";
@@ -117,28 +142,25 @@ function nextQuestion(){
 
 function checkAnswer(){
   if(user.gameToday>=100){
-    gameInfo.innerText="Bạn đã đạt giới hạn 100 điểm mini game hôm nay!";
+    gameInfo.innerText="Đã đạt giới hạn 100 điểm hôm nay!";
     return;
   }
 
   if(parseInt(answer.value)===correct){
-    let gain=1;
-    if(user.points>=1000) gain=2; // x2 CHỈ khi >=1000
+    let gain= user.points>=1000 ? 2 : 1;
     if(user.gameToday+gain>100) gain=100-user.gameToday;
-
     user.points+=gain;
     user.gameToday+=gain;
   }
-
   answer.value="";
-  saveUser();
+  saveAll();
   nextQuestion();
   render();
 }
 
 function addCouple(){
   if(user.posts>=postLimit()){
-    alert("Hôm nay bạn đã hết lượt đăng cặp!");
+    alert("Hôm nay bạn đã hết lượt đăng!");
     return;
   }
   const name=coupleInput.value.trim();
@@ -159,23 +181,22 @@ function vote(i){
 }
 
 function render(){
-  profile.innerText=`Điểm: ${user.points} | Danh hiệu: ${getTitle()}`;
+  profile.innerText=`Điểm: ${user.points} | ${getTitle()}`;
   limitInfo.innerText=`Đã đăng ${user.posts}/${postLimit()} cặp hôm nay`;
-  gameInfo.innerText=`Điểm mini game hôm nay: ${user.gameToday}/100`;
+  gameInfo.innerText=`Mini game hôm nay: ${user.gameToday}/100 điểm`;
 
   topPlayers.innerHTML="";
   players=[...players.filter(p=>p.id!==today),{id:today,points:user.points}];
-  players.sort((a,b)=>b.points-a.points).slice(0,5).forEach(p=>{
-    topPlayers.innerHTML+=`<div class="couple">❤️ ${p.points} điểm</div>`;
-  });
+  players.sort((a,b)=>b.points-a.points).slice(0,5)
+    .forEach(p=>topPlayers.innerHTML+=`<div class="couple">❤️ ${p.points} điểm</div>`);
 
   topCouples.innerHTML="";
   couples.filter(c=>c.votes>0).sort((a,b)=>b.votes-a.votes).slice(0,3)
-  .forEach((c,i)=>{
-    topCouples.innerHTML+=`<div class="couple rank${i+1}">
-    ${["🥇 Siêu hợp đôi","🥈 Rất hợp đôi","🥉 Khá hợp đôi"][i]}<br>
-    ${c.name} – ❤️ ${c.votes}</div>`;
-  });
+    .forEach((c,i)=>{
+      topCouples.innerHTML+=`<div class="couple rank${i+1}">
+      ${["🥇 Siêu hợp đôi","🥈 Rất hợp đôi","🥉 Khá hợp đôi"][i]}<br>
+      ${c.name} – ❤️ ${c.votes}</div>`;
+    });
 
   list.innerHTML="";
   couples.forEach((c,i)=>{
@@ -186,11 +207,8 @@ function render(){
   });
 }
 
-function saveUser(){
-  localStorage.setItem("user",JSON.stringify(user));
-  saveAll();
-}
 function saveAll(){
+  localStorage.setItem("user",JSON.stringify(user));
   localStorage.setItem("couples",JSON.stringify(couples));
   localStorage.setItem("players",JSON.stringify(players));
 }
