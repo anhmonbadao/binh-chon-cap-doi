@@ -1,141 +1,284 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bình chọn cặp đôi – Lì xì Tết</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BÌNH CHỌN CẶP ĐÔI – LÌ XÌ TẾT 2026</title>
+
+  <!-- ================= STYLE ================= -->
   <style>
-    body{margin:0;font-family:Arial;background:#b30000;color:#fff}
-    .center{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh}
-    input,button{padding:10px;margin:5px;border-radius:6px;border:none}
-    button{cursor:pointer}
+    /* ===== RESET CƠ BẢN ===== */
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:#b30000; /* nền đỏ Tết */
+      color:#fff;
+    }
+
+    /* ===== TIỆN ÍCH ===== */
     .hidden{display:none}
-    .card{background:#fff;color:#000;padding:15px;border-radius:10px;margin:10px;width:90%;max-width:500px}
-    a{color:#00ccff;font-weight:bold}
+    .center{
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      text-align:center;
+    }
+
+    input,button{
+      padding:10px 12px;
+      margin:6px 0;
+      border:none;
+      border-radius:6px;
+      font-size:15px;
+    }
+    button{cursor:pointer}
+
+    /* ===== BỐ CỤC CHÍNH ===== */
+    h1{text-align:center;margin-top:20px}
+
+    .container{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:20px;
+      padding:20px;
+    }
+    @media(max-width:900px){
+      .container{grid-template-columns:1fr}
+    }
+
+    .card{
+      background:#fff;
+      color:#000;
+      padding:18px;
+      border-radius:14px;
+      box-shadow:0 6px 14px rgba(0,0,0,.25);
+    }
+
+    a{
+      color:#00ccff;
+      font-weight:bold;
+      text-decoration:none;
+    }
+
+    .small{font-size:13px;color:#555}
+
   </style>
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- =================================================== -->
+<!-- =============== MÀN HÌNH NHẬP CODE ================ -->
+<!-- =================================================== -->
 <div id="login" class="center">
-  <iframe width="320" height="180" src="https://www.youtube.com/embed/0N46LMV7UDU?autoplay=1&mute=1" allow="autoplay"></iframe>
-  <h2>Nhập code để vào</h2>
-  <input id="codeInput" placeholder="Nhập code" />
+
+  <!-- VIDEO THU HÚT -->
+  <iframe width="360" height="200"
+    src="https://www.youtube.com/embed/0N46LMV7UDU?autoplay=1&mute=1"
+    allow="autoplay">
+  </iframe>
+
+  <h2>🔐 Nhập code để vào website</h2>
+
+  <input id="codeInput" placeholder="Nhập code vào đây">
   <div style="color:#00ccff">code: anhmontongtai</div>
-  <input id="nameInput" placeholder="Nhập tên của bạn" />
-  <button onclick="enterSite()">Vào</button>
+
+  <input id="nameInput" placeholder="Nhập tên của bạn">
+
+  <button onclick="enterSite()">VÀO WEBSITE</button>
 </div>
 
-<!-- MAIN -->
+<!-- =================================================== -->
+<!-- ================== TRANG CHÍNH =================== -->
+<!-- =================================================== -->
 <div id="main" class="hidden">
-  <h1 style="text-align:center">🎉 Bình chọn cặp đôi – Lì xì coin 🎉</h1>
 
-  <div class="card">
-    <h3>➕ Đề xuất cặp đôi (tối đa 2 / ngày)</h3>
-    <input id="coupleInput" placeholder="Tên cặp đôi" />
-    <button onclick="addCouple()">Gửi</button>
+  <h1>🎉 BÌNH CHỌN CẶP ĐÔI – LÌ XÌ COIN 🎉</h1>
+
+  <!-- NHẠC NỀN TẾT -->
+  <audio autoplay loop volume="0.15">
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3">
+  </audio>
+
+  <div class="container">
+
+    <!-- ĐỀ XUẤT CẶP ĐÔI -->
+    <div class="card">
+      <h3>➕ Đề xuất cặp đôi</h3>
+      <p class="small">Mỗi người tối đa <b>2 cặp / ngày</b></p>
+      <input id="coupleInput" placeholder="Ví dụ: A × B">
+      <button onclick="addCouple()">GỬI CẶP ĐÔI</button>
+    </div>
+
+    <!-- DANH SÁCH CẶP ĐÔI -->
+    <div class="card">
+      <h3>❤️ Danh sách cặp đôi</h3>
+      <div id="coupleList"></div>
+    </div>
+
+    <!-- TOP HỢP ĐÔI -->
+    <div class="card">
+      <h3>🏆 TOP HỢP ĐÔI</h3>
+      <ol id="topCouple"></ol>
+    </div>
+
+    <!-- LÌ XÌ COIN -->
+    <div class="card">
+      <h3>🧧 Lì xì coin của bạn</h3>
+      <p><b><span id="coin">0</span></b> coin</p>
+      <button onclick="openSmallLucky()">Đổi 20 coin → Bao lì xì nhỏ</button>
+    </div>
+
+    <!-- MINI GAME -->
+    <div class="card">
+      <h3>🎮 Mini game toán học</h3>
+      <p id="question"></p>
+      <input id="answer" placeholder="Nhập đáp án">
+      <button onclick="checkAnswer()">TRẢ LỜI</button>
+      <p class="small">Tối đa 100 lì xì coin / ngày</p>
+    </div>
+
   </div>
 
-  <div class="card">
-    <h3>❤️ Danh sách cặp đôi</h3>
-    <div id="coupleList"></div>
-  </div>
-
-  <div class="card">
-    <h3>🏆 TOP HỢP ĐÔI</h3>
-    <ol id="topCouple"></ol>
-  </div>
-
-  <div class="card">
-    <h3>🧧 Lì xì coin của bạn: <span id="coin">0</span></h3>
-    <button onclick="openSmallLucky()">Đổi 20 coin → Bao lì xì nhỏ</button>
-  </div>
-
-  <div class="card">
-    <h3>🎮 Mini game toán</h3>
-    <div id="question"></div>
-    <input id="answer" />
-    <button onclick="checkAnswer()">Trả lời</button>
-    <div>Hôm nay kiếm tối đa 100 coin</div>
-  </div>
-
-  <div style="text-align:center;margin:20px">
+  <div style="text-align:center;margin:40px">
     <a href="lucky.html">mở lì xì tiền đầy tay🧧</a>
   </div>
 </div>
 
+<!-- =================================================== -->
+<!-- ===================== SCRIPT ====================== -->
+<!-- =================================================== -->
 <script>
-const CODE='anhmontongtai';
-let user='';
-let coin=Number(localStorage.getItem('coin')||0);
-let couples=JSON.parse(localStorage.getItem('couples')||'[]');
-let dailyCount=Number(localStorage.getItem('dailyCount')||0);
-let dailyCoin=Number(localStorage.getItem('dailyCoin')||0);
-let qA=genQ();
 
+/*************** CẤU HÌNH CƠ BẢN ***************/
+const ACCESS_CODE = "anhmontongtai";
+
+/*************** BIẾN NGƯỜI DÙNG ***************/
+let userName = "";
+let coin = Number(localStorage.getItem("coin") || 0);
+let couples = JSON.parse(localStorage.getItem("couples") || "[]");
+let dailyCoupleCount = Number(localStorage.getItem("dailyCouple") || 0);
+let dailyCoin = Number(localStorage.getItem("dailyCoin") || 0);
+
+/*************** VÀO WEBSITE ***************/
 function enterSite(){
-  if(codeInput.value!==CODE)return alert('Sai code');
-  user=nameInput.value||'Ẩn danh';
-  login.classList.add('hidden');
-  main.classList.remove('hidden');
-  update();
+  if(codeInput.value !== ACCESS_CODE){
+    alert("Sai code rồi!");
+    return;
+  }
+  if(nameInput.value.trim() === ""){
+    alert("Bạn chưa nhập tên");
+    return;
+  }
+  userName = nameInput.value.trim();
+  login.classList.add("hidden");
+  main.classList.remove("hidden");
+  render();
+  newQuestion();
 }
 
+/*************** THÊM CẶP ĐÔI ***************/
 function addCouple(){
-  if(dailyCount>=2)return alert('Hôm nay bạn đã gửi đủ 2 cặp');
-  if(!coupleInput.value)return;
-  couples.push({name:coupleInput.value,vote:0});
-  dailyCount++;
-  save();update();
-}
+  if(dailyCoupleCount >= 2){
+    alert("Hôm nay bạn đã gửi đủ 2 cặp đôi rồi");
+    return;
+  }
+  if(coupleInput.value.trim() === "") return;
 
-function vote(i){
-  couples[i].vote++;
-  save();update();
-}
-
-function update(){
-  coinSpan=coin;
-  document.getElementById('coin').innerText=coin;
-  coupleList.innerHTML='';
-  couples.forEach((c,i)=>{
-    coupleList.innerHTML+=`<div>${c.name} – ❤️ ${c.vote} <button onclick="vote(${i})">Vote</button></div>`;
+  couples.push({
+    name: coupleInput.value.trim(),
+    vote: 0
   });
-  let sorted=[...couples].sort((a,b)=>b.vote-a.vote).slice(0,3);
-  topCouple.innerHTML='';
-  sorted.forEach(c=>topCouple.innerHTML+=`<li>${c.name} (${c.vote})</li>`);
+
+  dailyCoupleCount++;
+  coupleInput.value = "";
+  saveData();
+  render();
 }
 
-function genQ(){
-  let a=Math.floor(Math.random()*10),b=Math.floor(Math.random()*10);
-  question.innerText=`${a}+${b} = ?`;
-  return a+b;
+/*************** VOTE ***************/
+function voteCouple(index){
+  couples[index].vote++;
+  saveData();
+  render();
+}
+
+/*************** HIỂN THỊ ***************/
+function render(){
+  document.getElementById("coin").innerText = coin;
+
+  // danh sách cặp đôi
+  coupleList.innerHTML = "";
+  couples.forEach((c,i)=>{
+    coupleList.innerHTML += `
+      <div>
+        ${c.name} – ❤️ ${c.vote}
+        <button onclick="voteCouple(${i})">Vote</button>
+      </div>
+    `;
+  });
+
+  // top hợp đôi
+  topCouple.innerHTML = "";
+  [...couples]
+    .sort((a,b)=>b.vote-a.vote)
+    .slice(0,3)
+    .forEach(c=>{
+      topCouple.innerHTML += `<li>${c.name} (${c.vote} vote)</li>`;
+    });
+}
+
+/*************** MINI GAME ***************/
+let correctAnswer = 0;
+
+function newQuestion(){
+  let a = Math.floor(Math.random()*10);
+  let b = Math.floor(Math.random()*10);
+  correctAnswer = a + b;
+  question.innerText = `${a} + ${b} = ?`;
 }
 
 function checkAnswer(){
-  if(dailyCoin>=100)return alert('Hôm nay đã đạt max coin');
-  if(Number(answer.value)==qA){
-    coin++;dailyCoin++;qA=genQ();answer.value='';save();update();
+  if(dailyCoin >= 100){
+    alert("Bạn đã đạt giới hạn coin hôm nay");
+    return;
+  }
+  if(Number(answer.value) === correctAnswer){
+    coin++;
+    dailyCoin++;
+    answer.value = "";
+    newQuestion();
+    saveData();
+    render();
   }
 }
 
+/*************** BAO LÌ XÌ NHỎ ***************/
 function openSmallLucky(){
-  if(coin<20)return alert('Không đủ coin');
-  coin-=20;
-  let r=Math.random()*100;
-  if(r<10)alert('🎉 Trúng 1.000đ');
-  else if(r<19.5)alert('🎉 Trúng 5.000đ');
-  else if(r<20)alert('🎉 Trúng 10.000đ');
-  else alert('😅 Chúc may mắn lần sau');
-  save();update();
+  if(coin < 20){
+    alert("Không đủ coin");
+    return;
+  }
+  coin -= 20;
+  let r = Math.random()*100;
+  if(r < 10) alert("🎉 Trúng 1.000đ");
+  else if(r < 19.5) alert("🎉 Trúng 5.000đ");
+  else if(r < 20) alert("🎉 Trúng 10.000đ");
+  else alert("😅 Không trúng gì");
+  saveData();
+  render();
 }
 
-function save(){
-  localStorage.setItem('coin',coin);
-  localStorage.setItem('couples',JSON.stringify(couples));
-  localStorage.setItem('dailyCount',dailyCount);
-  localStorage.setItem('dailyCoin',dailyCoin);
+/*************** LƯU LOCAL ***************/
+function saveData(){
+  localStorage.setItem("coin", coin);
+  localStorage.setItem("couples", JSON.stringify(couples));
+  localStorage.setItem("dailyCouple", dailyCoupleCount);
+  localStorage.setItem("dailyCoin", dailyCoin);
 }
+
 </script>
 </body>
 </html>
