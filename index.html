@@ -2,276 +2,244 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Bình chọn cặp đôi</title>
+<title>Lì xì Tết 💰</title>
 <style>
 body{
-  background:#0e0e0e;
-  color:#fff;
+  margin:0;
   font-family:Arial;
-  max-width:900px;
+  background:#b30000;
+  color:#fff;
+}
+.container{
+  max-width:1000px;
   margin:auto;
-  padding:20px
+  padding:20px;
 }
 h1,h2{text-align:center}
-input,button{
-  width:100%;
+.box{
+  background:rgba(0,0,0,0.3);
+  padding:15px;
+  border-radius:12px;
+  margin:15px 0;
+}
+button,input{
   padding:10px;
-  margin:6px 0;
-  border-radius:6px;
-  border:none
+  border:none;
+  border-radius:8px;
+  width:100%;
+  margin:5px 0;
 }
 button{
-  background:#ff69b4;
+  background:gold;
   font-weight:bold;
-  cursor:pointer
+  cursor:pointer;
 }
 button:disabled{background:#555}
-.box{
-  background:#1c1c1c;
-  padding:12px;
-  border-radius:8px;
-  margin:12px 0
+a{color:#00ccff;font-weight:bold;text-decoration:none}
+.coin{color:gold;font-weight:bold}
+.small{font-size:14px;color:#ddd}
+
+#lock{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
-.couple{
-  background:#262626;
-  padding:8px;
-  border-radius:6px;
-  margin:6px 0
+.lock-box{
+  background:#800000;
+  padding:20px;
+  border-radius:15px;
+  max-width:500px;
+  width:100%;
 }
-.rank1{color:gold;font-weight:bold}
-.rank2{color:silver;font-weight:bold}
-.rank3{color:#cd7f32;font-weight:bold}
-a{color:cyan;font-weight:bold;text-decoration:none}
-.video{
-  position:relative;
-  padding-bottom:56.25%;
-  height:0;
-  overflow:hidden;
-  border-radius:10px;
-  margin-bottom:15px
+iframe{border-radius:10px}
+
+.lixi-big{
+  font-size:120px;
+  text-align:center;
+  cursor:pointer;
+  animation:none;
 }
-.video iframe{
-  position:absolute;
-  top:0;left:0;
-  width:100%;height:100%
+@keyframes shake{
+  0%{transform:rotate(0)}
+  25%{transform:rotate(2deg)}
+  50%{transform:rotate(-2deg)}
+  75%{transform:rotate(2deg)}
+  100%{transform:rotate(0)}
 }
-.hint{color:#aaa;text-align:center;font-size:14px}
+
+.flex{
+  display:flex;
+  gap:20px;
+}
+.flex > div{flex:1}
 </style>
 </head>
 <body>
 
-<!-- 🔐 MÀN NHẬP CODE -->
+<!-- 🔒 MÀN VÀO -->
 <div id="lock">
-  <div class="video">
-    <iframe 
-      src="https://www.youtube.com/embed/nAP-Jk7fgHM?autoplay=1&mute=1&controls=1"
-      frameborder="0"
-      allow="autoplay; encrypted-media"
-      allowfullscreen>
+  <div class="lock-box">
+    <iframe width="100%" height="250"
+      src="https://www.youtube.com/embed/0N46LMV7UDU?autoplay=1&mute=1&controls=1&loop=1"
+      allow="autoplay">
     </iframe>
+
+    <h2>Nhập code để vào 🎊</h2>
+    <p class="small">Code: <b>anhmontongtai</b></p>
+    <input id="nameInput" placeholder="Nhập tên của bạn">
+    <input id="codeInput" placeholder="Nhập code">
+    <button onclick="unlock()">Vào web</button>
+  </div>
+</div>
+
+<!-- 🌸 TRANG CHÍNH -->
+<div id="main" style="display:none" class="container">
+
+<h1>🧧 LÌ XÌ ĐẦU NĂM – PHÁT TÀI PHÁT LỘC 🧧</h1>
+
+<div class="box">
+👤 Người chơi: <b id="playerName"></b><br>
+💰 Lì xì coin: <span class="coin" id="coins">0</span>
+</div>
+
+<div class="box">
+<h2>🧮 Mini game toán (1 câu = 1 coin)</h2>
+<p id="question"></p>
+<input id="answer">
+<button onclick="check()">Trả lời</button>
+</div>
+
+<div class="box">
+<h2>🎁 Đổi bao lì xì nhỏ (20 coin)</h2>
+<button onclick="openSmall()">Mở bao lì xì</button>
+<p id="smallResult"></p>
+</div>
+
+<div class="box">
+<h2 style="color:#00ccff">
+<a href="#big">🧧 MỞ LÌ XÌ TIỀN ĐẦY TAY 🧧</a>
+</h2>
+</div>
+
+<!-- 🧧 LÌ XÌ LỚN -->
+<div id="big" class="box">
+<h2>🧧 Lì xì vàng khổng lồ 🧧</h2>
+<p>⏱️ Thời gian còn lại: <span id="timer"></span></p>
+
+<div class="flex">
+  <div>
+    <div id="bigLixi" class="lixi-big" onclick="clickBig()">🧧</div>
+    <p id="bigResult" style="text-align:center"></p>
   </div>
 
-  <h2>Nhập code để vào web</h2>
-  <p class="hint">Code: <b>anhmontongtai</b></p>
-
-  <input id="codeInput" placeholder="Nhập code ở đây">
-  <button onclick="unlock()">Vào</button>
+  <div>
+    <h3>🎉 Ăn trọn lì xì</h3>
+    <div id="winners"></div>
+  </div>
 </div>
-
-<!-- 🌐 NỘI DUNG WEB -->
-<div id="main" style="display:none">
-
-<h1>💖 Bình chọn cặp đôi 💖</h1>
-
-<p style="text-align:center">
-<a href="https://www.youtube.com/@anhmontongtai" target="_blank">
-👉 Qua kênh YouTube anhmon tổng tài 👈
-</a>
-</p>
-
-<div class="box">
-<h2>👤 Hồ sơ</h2>
-<p id="profile"></p>
-</div>
-
-<div class="box">
-<h2>🧮 Mini game giải toán</h2>
-<p id="question"></p>
-<input id="answer" placeholder="Nhập đáp án">
-<button onclick="checkAnswer()">Trả lời</button>
-<p id="gameInfo"></p>
-</div>
-
-<div class="box">
-<h2>🏆 Top người nhiều điểm</h2>
-<div id="topPlayers"></div>
-</div>
-
-<div class="box">
-<h2>➕ Đề xuất cặp đôi</h2>
-<input id="coupleInput" placeholder="Tên cặp đôi">
-<button onclick="addCouple()">Thêm cặp đôi</button>
-<p id="limitInfo"></p>
-</div>
-
-<div class="box">
-<h2>🏆 Top cặp đôi</h2>
-<div id="topCouples"></div>
-</div>
-
-<div class="box">
-<h2>📋 Danh sách cặp đôi</h2>
-<div id="list"></div>
 </div>
 
 </div>
 
 <script>
-const USER_CODE="anhmontongtai";
-const ADMIN_CODE="anhmonbadao";
-const today=new Date().toDateString();
-
-let adminTaken=JSON.parse(localStorage.getItem("adminTaken")||"false");
-
+const CODE="anhmontongtai";
 let user=JSON.parse(localStorage.getItem("user")||"null");
-if(!user||user.date!==today){
-  user={
-    points:user?user.points:0,
-    gameToday:0,
-    date:today,
-    votes:{},
-    posts:0,
-    isAdmin:user?user.isAdmin:false
-  };
-}
-
-let couples=JSON.parse(localStorage.getItem("couples")||"[]");
-let players=JSON.parse(localStorage.getItem("players")||"[]");
+let winners=JSON.parse(localStorage.getItem("winners")||"[]");
 
 function unlock(){
-  const input=codeInput.value.trim();
-
-  if(input===ADMIN_CODE){
-    if(adminTaken){
-      alert("Code admin đã được sử dụng!");
-      return;
-    }
-    user.isAdmin=true;
-    adminTaken=true;
-    localStorage.setItem("adminTaken","true");
-  } 
-  else if(input!==USER_CODE){
-    alert("Sai code!");
-    return;
-  }
-
+  if(codeInput.value!==CODE) return alert("Sai code!");
+  if(!nameInput.value) return alert("Nhập tên!");
+  user={
+    name:nameInput.value,
+    coins:0
+  };
   localStorage.setItem("user",JSON.stringify(user));
   lock.style.display="none";
   main.style.display="block";
-  nextQuestion();
-  render();
+  startGame();
 }
 
-function getTitle(){
-  if(user.isAdmin) return "ADMIN 👑";
-  if(user.points>=1000) return "Cánh tay phải đắc lực";
-  if(user.points>=100) return "Sống lâu trăm tuổi";
-  if(user.points>=50) return "Người thông minh kì cựu 🌱";
-  return "Người mới";
+function startGame(){
+  playerName.innerText=user.name;
+  updateCoins();
+  newQuestion();
+  startTimer();
+  renderWinners();
 }
 
-function postLimit(){
-  if(user.points>=1000) return 10;
-  if(user.points>=100) return 5;
-  return 2;
+function updateCoins(){
+  coins.innerText=user.coins;
+  localStorage.setItem("user",JSON.stringify(user));
 }
 
-let a,b,op,correct;
-function nextQuestion(){
-  a=Math.floor(Math.random()*10)+1;
-  b=Math.floor(Math.random()*10)+1;
-  op=["+","-","×"][Math.floor(Math.random()*3)];
-  correct=op==="+"?a+b:op==="-"?a-b:a*b;
-  question.innerText=`${a} ${op} ${b} = ?`;
+let a,b,ans;
+function newQuestion(){
+  a=Math.floor(Math.random()*10);
+  b=Math.floor(Math.random()*10);
+  ans=a+b;
+  question.innerText=`${a} + ${b} = ?`;
 }
 
-function checkAnswer(){
-  if(user.gameToday>=100){
-    gameInfo.innerText="Đã đạt giới hạn 100 điểm hôm nay!";
-    return;
-  }
-  if(parseInt(answer.value)===correct){
-    let gain=user.points>=1000?2:1;
-    if(user.gameToday+gain>100) gain=100-user.gameToday;
-    user.points+=gain;
-    user.gameToday+=gain;
+function check(){
+  if(parseInt(answer.value)===ans){
+    user.coins++;
+    updateCoins();
   }
   answer.value="";
-  saveAll();
-  nextQuestion();
-  render();
+  newQuestion();
 }
 
-function addCouple(){
-  if(user.posts>=postLimit()){
-    alert("Hôm nay bạn đã hết lượt đăng!");
-    return;
+function openSmall(){
+  if(user.coins<20) return;
+  user.coins-=20;
+  updateCoins();
+  let r=Math.random()*100;
+  if(r<80) smallResult.innerText="😅 Không trúng";
+  else if(r<90) smallResult.innerText="🎉 Trúng 1.000đ";
+  else if(r<99.5) smallResult.innerText="🎉 Trúng 5.000đ";
+  else smallResult.innerText="🔥 Trúng 10.000đ";
+}
+
+let time=3600;
+let canOpen=false;
+function startTimer(){
+  setInterval(()=>{
+    if(time>0){
+      time--;
+      timer.innerText=`${Math.floor(time/60)}:${time%60}`;
+    }else{
+      canOpen=true;
+      bigLixi.style.animation="shake 0.3s infinite";
+    }
+  },1000);
+}
+
+function clickBig(){
+  if(!canOpen) return;
+  let r=Math.random()*100;
+  let prize=0;
+  if(r<60) prize=0;
+  else if(r<80) prize=1000;
+  else if(r<90) prize=5000;
+  else if(r<99) prize=10000;
+  else prize=50000;
+
+  bigResult.innerText= prize?`🎉 Trúng ${prize.toLocaleString()}đ`:"😅 Không trúng";
+  if(prize){
+    winners.unshift({name:user.name,prize});
+    winners=winners.slice(0,10);
+    localStorage.setItem("winners",JSON.stringify(winners));
+    renderWinners();
   }
-  const name=coupleInput.value.trim();
-  if(!name) return;
-  couples.push({name,votes:0});
-  user.posts++;
-  coupleInput.value="";
-  saveAll();
-  render();
+  canOpen=false;
+  bigLixi.style.animation="none";
+  time=3600;
 }
 
-function vote(i){
-  if(user.votes[i]) return;
-  couples[i].votes++;
-  user.votes[i]=true;
-  saveAll();
-  render();
-}
-
-function render(){
-  profile.innerText=`Điểm: ${user.points} | ${getTitle()}`;
-  limitInfo.innerText=`Đã đăng ${user.posts}/${postLimit()} cặp hôm nay`;
-  gameInfo.innerText=`Mini game hôm nay: ${user.gameToday}/100 điểm`;
-
-  topPlayers.innerHTML="";
-  players=[...players.filter(p=>p.id!==today),{id:today,points:user.points}];
-  players.sort((a,b)=>b.points-a.points).slice(0,5)
-    .forEach(p=>topPlayers.innerHTML+=`<div class="couple">❤️ ${p.points} điểm</div>`);
-
-  topCouples.innerHTML="";
-  couples.filter(c=>c.votes>0)
-    .sort((a,b)=>b.votes-a.votes)
-    .slice(0,3)
-    .forEach((c,i)=>{
-      topCouples.innerHTML+=`
-      <div class="couple rank${i+1}">
-      ${["🥇 Siêu hợp đôi","🥈 Rất hợp đôi","🥉 Khá hợp đôi"][i]}<br>
-      ${c.name} – ❤️ ${c.votes}
-      </div>`;
-    });
-
-  list.innerHTML="";
-  couples.forEach((c,i)=>{
-    list.innerHTML+=`
-    <div class="couple">
-    <b>${c.name}</b> ❤️ ${c.votes}<br>
-    <button ${user.votes[i]?"disabled":""} onclick="vote(${i})">
-    ${user.votes[i]?"Đã vote":"Vote"}
-    </button>
-    </div>`;
-  });
-}
-
-function saveAll(){
-  localStorage.setItem("user",JSON.stringify(user));
-  localStorage.setItem("couples",JSON.stringify(couples));
-  localStorage.setItem("players",JSON.stringify(players));
+function renderWinners(){
+  winnersDiv=winners.map(w=>`<p>🧧 ${w.name} – ${w.prize.toLocaleString()}đ</p>`).join("");
+  winners.innerHTML=winnersDiv;
 }
 </script>
 
