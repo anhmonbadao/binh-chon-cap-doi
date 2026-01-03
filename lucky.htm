@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Lì xì vàng khổng lồ 🧧</title>
+<style>
+body{
+  background:#b30000;
+  color:white;
+  font-family:sans-serif;
+  text-align:center;
+}
+#timer{
+  font-size:28px;
+  margin:20px;
+}
+#lixi{
+  font-size:120px;
+  cursor:pointer;
+  animation: shake 1s infinite alternate;
+}
+@keyframes shake{
+  from{transform:rotate(-5deg)}
+  to{transform:rotate(5deg)}
+}
+#log{
+  background:white;
+  color:black;
+  width:300px;
+  margin:auto;
+  padding:10px;
+  border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+<h1>🧧 LÌ XÌ VÀNG KHỔNG LỒ 🧧</h1>
+<div id="timer">⏳ 60:00</div>
+
+<div id="lixi">🧧</div>
+
+<h3>Ăn trọn lì xì</h3>
+<div id="log"></div>
+
+<script>
+let time = 3600;
+let opened = false;
+
+setInterval(()=>{
+  if(time>0){
+    time--;
+    let m=Math.floor(time/60);
+    let s=time%60;
+    document.getElementById("timer").innerText=
+      "⏳ "+m+":"+(s<10?"0"+s:s);
+  }
+},1000);
+
+document.getElementById("lixi").onclick=()=>{
+  if(time>0 || opened) return;
+  opened=true;
+
+  let r=Math.random()*100;
+  let prize="Không trúng";
+
+  if(r<1) prize="🎉 50.000đ";
+  else if(r<10) prize="🎊 10.000đ";
+  else if(r<20) prize="💰 5.000đ";
+  else if(r<40) prize="💵 1.000đ";
+
+  document.getElementById("log").innerHTML +=
+    `<p>Người chơi trúng: <b>${prize}</b></p>`;
+};
+</script>
+</body>
+</html>
