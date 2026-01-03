@@ -2,240 +2,231 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Tết Bình Chọn Cặp Đôi 🧧</title>
+<title>Bình chọn cặp đôi Tết 🧧</title>
 
 <style>
 body{
-    margin:0;
-    font-family:Arial, sans-serif;
-    background:linear-gradient(#b30000,#ff0000);
-    color:white;
-    text-align:center;
+  margin:0;
+  background:#b30000;
+  color:white;
+  font-family:Arial;
+  text-align:center;
 }
 
-h1,h2,h3{margin:10px 0}
+h1,h2{color:gold}
+
+.box{
+  background:white;
+  color:black;
+  width:90%;
+  max-width:500px;
+  margin:15px auto;
+  padding:15px;
+  border-radius:12px;
+}
 
 input,button{
-    padding:10px;
-    border-radius:8px;
-    border:none;
-    margin:5px;
+  padding:8px;
+  margin:5px;
+  border-radius:6px;
+  border:1px solid #ccc;
 }
 
 button{
-    background:gold;
-    font-weight:bold;
-    cursor:pointer;
+  background:#d40000;
+  color:white;
+  cursor:pointer;
 }
 
-.section{
-    background:rgba(0,0,0,0.25);
-    margin:15px;
-    padding:15px;
-    border-radius:15px;
-}
-
-/* LOGIN */
-#login{
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-}
-
-/* VIDEO */
-iframe{
-    width:90%;
-    max-width:560px;
-    height:315px;
-    border-radius:12px;
-    margin:10px 0;
-}
-
-/* MAIN */
-#main{display:none}
-
-/* COUPLE */
 .couple{
-    background:rgba(255,255,255,0.15);
-    padding:10px;
-    border-radius:10px;
-    margin:8px;
+  background:#d32f2f;
+  color:white;
+  padding:8px;
+  border-radius:8px;
+  margin:6px 0;
 }
 
-/* TOP */
-.rank1{color:gold}
-.rank2{color:silver}
-.rank3{color:#cd7f32}
-
-/* LÌ XÌ */
-#lixiBox{
-    margin-top:30px;
+#luckyBig{
+  font-size:80px;
+  cursor:pointer;
+  user-select:none;
 }
 
-#lixi{
-    font-size:80px;
-    cursor:pointer;
-    display:none;
+@keyframes shake{
+  0%{transform:rotate(0)}
+  25%{transform:rotate(3deg)}
+  50%{transform:rotate(-3deg)}
+  75%{transform:rotate(3deg)}
+  100%{transform:rotate(0)}
 }
-
-#timer{
-    font-size:22px;
-    margin:10px;
-}
-
-/* BẢNG TRÚNG */
-#winners{
-    background:rgba(0,0,0,0.3);
-    margin:10px;
-    padding:10px;
-    border-radius:10px;
-}
+.shake{animation:shake .3s infinite}
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
-<div id="login">
-    <h1>🧧 TẾT BÌNH CHỌN CẶP ĐÔI 🧧</h1>
+<h1>🧧 Bình chọn cặp đôi Tết 🧧</h1>
 
-    <iframe src="https://www.youtube.com/embed/nAP-Jk7fgHM"></iframe>
-
-    <input id="nameInput" placeholder="Nhập tên của bạn">
-    <input id="codeInput" placeholder="Nhập code">
-    <p>Code: <b>anhmontongtai</b></p>
-
-    <button onclick="enter()">Vào trang</button>
+<!-- VIDEO NHẠC TẾT -->
+<div class="box">
+  <h2>🎵 Nhạc Tết</h2>
+  <iframe width="100%" height="200"
+  src="https://www.youtube.com/embed/0N46LMV7UDU?autoplay=0&controls=1"
+  allow="autoplay"></iframe>
 </div>
 
-<!-- MAIN -->
-<div id="main">
-    <h1>🌸 Xin chào <span id="user"></span> 🌸</h1>
+<!-- NHẬP TÊN -->
+<div class="box">
+  <h2>✍️ Nhập tên của bạn</h2>
+  <input id="username" placeholder="Tên của bạn">
+  <button onclick="saveName()">Lưu</button>
+  <p id="hello"></p>
+</div>
 
-    <!-- ĐỀ XUẤT -->
-    <div class="section">
-        <h2>💞 Đề xuất cặp đôi (2/ngày)</h2>
-        <input id="coupleInput" placeholder="Tên cặp đôi">
-        <button onclick="addCouple()">Gửi</button>
-    </div>
+<!-- ĐỀ XUẤT CẶP ĐÔI -->
+<div class="box">
+  <h2>➕ Đề xuất cặp đôi</h2>
+  <input id="a" placeholder="Tên người A">
+  <input id="b" placeholder="Tên người B">
+  <br>
+  <button onclick="addCouple()">Đăng cặp đôi</button>
+</div>
 
-    <!-- DANH SÁCH -->
-    <div class="section">
-        <h2>📜 Danh sách cặp đôi</h2>
-        <div id="list"></div>
-    </div>
+<!-- DANH SÁCH CẶP ĐÔI -->
+<div class="box">
+  <h2>📜 Danh sách cặp đôi</h2>
+  <div id="coupleList">
+    <p style="opacity:.6">Chưa có cặp đôi nào 🧧</p>
+  </div>
+</div>
 
-    <!-- TOP -->
-    <div class="section">
-        <h2>🏆 Top hợp đôi</h2>
-        <div id="top"></div>
-    </div>
+<!-- MINI GAME TOÁN -->
+<div class="box">
+  <h2>🧮 Giải toán nhận lì xì coin</h2>
+  <p id="question"></p>
+  <input id="answer" placeholder="Đáp án">
+  <button onclick="checkMath()">Trả lời</button>
+</div>
 
-    <!-- LÌ XÌ -->
-    <div id="lixiBox" class="section">
-        <h2 style="color:white">🧧 MỞ LÌ XÌ TIỀN ĐẦY TAY 🧧</h2>
-        <div id="timer"></div>
-        <div id="lixi" onclick="openLixi()">🧧</div>
+<!-- LÌ XÌ COIN -->
+<div class="box">
+  <h2>🧧 Lì xì coin của bạn</h2>
+  <h3 id="coin">0</h3>
+  <button onclick="openSmall()">Đổi 20 coin → Lì xì nhỏ</button>
+</div>
 
-        <div id="winners">
-            <h3>🎉 Ăn trọn lì xì</h3>
-            <div id="winnerList"></div>
-        </div>
-    </div>
+<!-- LÌ XÌ VÀNG 1 GIỜ -->
+<div class="box">
+  <h2 style="color:white">🧧 Lì xì vàng 1 giờ</h2>
+  <p id="timer"></p>
+  <div id="luckyBig" onclick="tapLucky()">🧧</div>
+  <p id="result"></p>
 </div>
 
 <script>
-const CODE="anhmontongtai";
-let userName="";
-let opened=false;
+let name="";
+let coin=0;
+let couples=[];
 
-/* LOGIN */
-function enter(){
-    if(nameInput.value==""||codeInput.value==""){
-        alert("Nhập đủ tên và code!");
-        return;
-    }
-    if(codeInput.value!==CODE){
-        alert("Sai code!");
-        return;
-    }
-    userName=nameInput.value;
-    login.style.display="none";
-    main.style.display="block";
-    user.innerText=userName;
-    render();
-    startTimer();
+/* TÊN */
+function saveName(){
+  name=document.getElementById("username").value;
+  document.getElementById("hello").innerText=
+    name?("Xin chào "+name+" 🧨"):"";
 }
 
-/* DATA */
-function getCouples(){
-    return JSON.parse(localStorage.getItem("couples")||"[]");
-}
-function saveCouples(d){
-    localStorage.setItem("couples",JSON.stringify(d));
-}
-
-/* ADD COUPLE */
+/* CẶP ĐÔI */
 function addCouple(){
-    let d=getCouples();
-    let today=new Date().toDateString();
-    let count=d.filter(x=>x.user===userName && x.date===today).length;
-    if(count>=2){
-        alert("Mỗi ngày chỉ được 2 cặp!");
-        return;
-    }
-    d.push({name:coupleInput.value,user:userName,date:today});
-    saveCouples(d);
-    coupleInput.value="";
-    render();
+  let a=document.getElementById("a").value;
+  let b=document.getElementById("b").value;
+  if(!a||!b) return;
+
+  couples.push(a+" × "+b);
+  renderCouples();
 }
 
-/* RENDER */
-function render(){
-    let d=getCouples();
-    list.innerHTML="";
-    d.forEach(c=>{
-        list.innerHTML+=`<div class="couple">${c.name}</div>`;
-    });
-
-    let map={};
-    d.forEach(c=>map[c.name]=(map[c.name]||0)+1);
-    let sorted=Object.entries(map).sort((a,b)=>b[1]-a[1]);
-    top.innerHTML="";
-    if(sorted[0])top.innerHTML+=`<div class="rank1">🥇 ${sorted[0][0]}</div>`;
-    if(sorted[1])top.innerHTML+=`<div class="rank2">🥈 ${sorted[1][0]}</div>`;
-    if(sorted[2])top.innerHTML+=`<div class="rank3">🥉 ${sorted[2][0]}</div>`;
+function renderCouples(){
+  const box=document.getElementById("coupleList");
+  box.innerHTML="";
+  couples.forEach(c=>{
+    let d=document.createElement("div");
+    d.className="couple";
+    d.innerText=c;
+    box.appendChild(d);
+  });
 }
 
-/* LÌ XÌ TIMER */
+/* MINI GAME TOÁN */
+let x,y;
+function newMath(){
+  x=Math.floor(Math.random()*10);
+  y=Math.floor(Math.random()*10);
+  document.getElementById("question").innerText=
+    x+" + "+y+" = ?";
+}
+newMath();
+
+function checkMath(){
+  let ans=document.getElementById("answer").value;
+  if(Number(ans)==x+y){
+    coin+=5;
+    updateCoin();
+    alert("Đúng! +5 lì xì coin 🧧");
+    newMath();
+  }else{
+    alert("Sai rồi 😅");
+  }
+}
+
+/* COIN */
+function updateCoin(){
+  document.getElementById("coin").innerText=coin;
+}
+
+function openSmall(){
+  if(coin<20){
+    alert("Chưa đủ 20 coin");
+    return;
+  }
+  coin-=20;
+  updateCoin();
+  let r=Math.random()*100;
+  if(r<80) alert("Không trúng gì 😢");
+  else if(r<90) alert("Trúng 1.000đ 💸");
+  else if(r<99.5) alert("Trúng 5.000đ 💵");
+  else alert("Trúng 10.000đ 💰");
+}
+
+/* LÌ XÌ VÀNG 1H */
 let time=3600;
-function startTimer(){
-    setInterval(()=>{
-        if(time>0){
-            time--;
-            timer.innerText="⏳ "+time+" giây";
-            if(time===0){
-                lixi.style.display="block";
-            }
-        }
-    },1000);
+let canOpen=false;
+
+setInterval(()=>{
+  if(time>0){
+    time--;
+    document.getElementById("timer").innerText=
+      "Còn "+Math.floor(time/60)+"p "+time%60+"s";
+  }else{
+    canOpen=true;
+    document.getElementById("luckyBig").classList.add("shake");
+    document.getElementById("timer").innerText="Nhấp liên tục để mở!";
+  }
+},1000);
+
+function tapLucky(){
+  if(!canOpen) return;
+  let r=Math.random()*100;
+  if(r<60) result("Không trúng 😭");
+  else if(r<80) result("1.000đ 💸");
+  else if(r<90) result("5.000đ 💵");
+  else if(r<99) result("10.000đ 💰");
+  else result("🎉 50.000đ 🎉");
 }
 
-/* OPEN LÌ XÌ */
-function openLixi(){
-    if(opened)return;
-    opened=true;
-    let r=Math.random()*100;
-    let money="Không trúng";
-    if(r<20)money="1.000đ";
-    else if(r<30)money="5.000đ";
-    else if(r<39)money="10.000đ";
-    else if(r<40)money="50.000đ";
-
-    winnerList.innerHTML+=`<div>${userName}: ${money}</div>`;
-    lixi.innerText="🎉";
+function result(t){
+  document.getElementById("result").innerText=t;
+  canOpen=false;
+  document.getElementById("luckyBig").classList.remove("shake");
 }
 </script>
 
