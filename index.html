@@ -2,210 +2,254 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>🧧 Bình chọn cặp đôi Tết 🧧</title>
+<title>Bình chọn cặp đôi Tết 🧧</title>
 
 <style>
+/* ====== STYLE CHUNG ====== */
 body{
-  margin:0;
-  font-family:"Segoe UI",Arial;
-  background:linear-gradient(#b30000,#8b0000);
-  color:white;
-  text-align:center;
+    margin:0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(#b30000,#ff1a1a);
+    color:white;
+    text-align:center;
 }
-header{
-  background:#8b0000;
-  padding:10px;
+
+h1,h2,h3{
+    margin:10px 0;
 }
-h1{
-  color:gold;
-  margin:10px 0;
-}
-.box{
-  background:#fff5e6;
-  color:#000;
-  width:92%;
-  max-width:480px;
-  margin:15px auto;
-  padding:15px;
-  border-radius:14px;
-  box-shadow:0 0 10px rgba(0,0,0,0.3);
-}
-input,button{
-  padding:8px;
-  margin:5px;
-  width:85%;
-  border-radius:6px;
-}
+
 button{
-  background:#d40000;
-  color:white;
-  border:none;
-  cursor:pointer;
+    padding:10px 20px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:gold;
+    font-weight:bold;
 }
-button:hover{opacity:0.9}
-.vote-btn{
-  background:#ffcc00;
-  color:black;
-  width:auto;
+
+input{
+    padding:10px;
+    border-radius:6px;
+    border:none;
+    margin:5px;
 }
-.rank{
-  background:#ffe08a;
-  border-radius:10px;
-  padding:8px;
-  margin:6px 0;
-  font-weight:bold;
+
+/* ====== MÀN NHẬP CODE ====== */
+#loginBox{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
 }
-.lixi{
-  font-size:70px;
-  cursor:pointer;
+
+#loginBox p{
+    opacity:0.9;
 }
-small{color:#444}
+
+/* ====== VIDEO ====== */
+#videoBox iframe{
+    width:90%;
+    max-width:560px;
+    height:315px;
+    border-radius:12px;
+    margin:15px 0;
+}
+
+/* ====== TRANG CHÍNH ====== */
+#main{
+    display:none;
+    padding-bottom:50px;
+}
+
+.section{
+    background:rgba(0,0,0,0.2);
+    margin:15px;
+    padding:15px;
+    border-radius:12px;
+}
+
+/* ====== CẶP ĐÔI ====== */
+.couple{
+    background:rgba(255,255,255,0.15);
+    margin:10px;
+    padding:10px;
+    border-radius:10px;
+}
+
+/* ====== TOP ====== */
+.rank1{color:gold;}
+.rank2{color:silver;}
+.rank3{color:#cd7f32;}
+
+/* ====== LINK LÌ XÌ ====== */
+#lixiLink{
+    color:white;
+    font-weight:bold;
+    margin-top:30px;
+    cursor:pointer;
+    text-decoration:underline;
+}
 </style>
 </head>
 
 <body>
 
-<!-- 🎬 VIDEO MỞ ĐẦU -->
-<iframe width="100%" height="240"
-src="https://www.youtube.com/embed/nAP-Jk7fgHM?autoplay=1&mute=1&loop=1&playlist=nAP-Jk7fgHM"
-frameborder="0"
-allow="autoplay"
-allowfullscreen></iframe>
+<!-- ====== MÀN NHẬP TÊN + CODE ====== -->
+<div id="loginBox">
+    <h1>🧧 Bình chọn cặp đôi Tết 🧧</h1>
 
-<header>
-<h1>🧧 Bình chọn cặp đôi Tết 2026 🌸</h1>
-<p>🎆 Chọn cặp đôi bạn thấy hợp nhất – đón lộc đầu năm 🎆</p>
-</header>
+    <div id="videoBox">
+        <iframe src="https://www.youtube.com/embed/nAP-Jk7fgHM?autoplay=1&mute=1"
+        allow="autoplay"></iframe>
+    </div>
 
-<!-- 👤 NHẬP TÊN -->
-<div class="box">
-<h3>👤 Nhập tên của bạn</h3>
-<input id="username" placeholder="Tên của bạn">
-<button onclick="saveName()">Xác nhận</button>
-<p id="hello"></p>
+    <input id="nameInput" placeholder="Nhập tên của bạn">
+    <input id="codeInput" placeholder="Nhập code để vào">
+    <p>Code: <b>anhmontongtai</b></p>
+
+    <button onclick="login()">Vào trang</button>
 </div>
 
-<!-- ➕ ĐỀ XUẤT -->
-<div class="box">
-<h3>💑 Đề xuất cặp đôi</h3>
-<input id="coupleInput" placeholder="Ví dụ: A ❤️ B">
-<button onclick="addCouple()">Gửi cặp đôi</button>
-<small>Mỗi cặp chỉ vote được 1 lần / người</small>
-</div>
+<!-- ====== TRANG CHÍNH ====== -->
+<div id="main">
+    <h1>🌸 Chào <span id="userName"></span> 🌸</h1>
 
-<!-- 🗳️ DANH SÁCH + VOTE -->
-<div class="box">
-<h3>🗳️ Vote cặp đôi</h3>
-<ul id="coupleList"></ul>
-</div>
+    <!-- ĐỀ XUẤT -->
+    <div class="section">
+        <h2>💞 Đề xuất cặp đôi (tối đa 2/ngày)</h2>
+        <input id="coupleInput" placeholder="Tên cặp đôi">
+        <button onclick="addCouple()">Gửi</button>
+    </div>
 
-<!-- 🏆 TOP 3 -->
-<div class="box">
-<h3>🏆 TOP 3 HỢP ĐÔI 🧧</h3>
-<div id="topCouple"></div>
-</div>
+    <!-- DANH SÁCH -->
+    <div class="section">
+        <h2>🗳️ Bình chọn</h2>
+        <div id="coupleList"></div>
+    </div>
 
-<!-- 🧧 LÌ XÌ 1 GIỜ -->
-<div class="box">
-<h3 style="color:white">🧧 LÌ XÌ MAY MẮN 1 GIỜ 🧧</h3>
-<p id="timer"></p>
-<div class="lixi" onclick="openLixi()">🧧</div>
-<p id="lixiResult"></p>
+    <!-- TOP -->
+    <div class="section">
+        <h2>🏆 Top hợp đôi</h2>
+        <div id="topList"></div>
+    </div>
+
+    <!-- LÌ XÌ -->
+    <div id="lixiLink" onclick="openLixi()">
+        🧧 MỞ LÌ XÌ TIỀN ĐẦY TAY 🧧
+    </div>
 </div>
 
 <script>
-let name = localStorage.getItem("name") || "";
-let couples = JSON.parse(localStorage.getItem("couples")||"[]");
+/* ====== BIẾN ====== */
+const CODE = "anhmontongtai";
+let currentUser = "";
 
-if(name){
-  document.getElementById("hello").innerText="Xin chào "+name+" 🌸";
+/* ====== LOGIN ====== */
+function login(){
+    const name = nameInput.value.trim();
+    const code = codeInput.value.trim();
+
+    if(name === "" || code === ""){
+        alert("Nhập đầy đủ tên và code!");
+        return;
+    }
+
+    if(code !== CODE){
+        alert("Sai code!");
+        return;
+    }
+
+    currentUser = name;
+    localStorage.setItem("currentUser",name);
+
+    loginBox.style.display="none";
+    main.style.display="block";
+    userName.innerText=name;
+
+    renderCouples();
+    renderTop();
 }
 
-function saveName(){
-  name = username.value.trim();
-  if(!name){alert("Nhập tên trước!");return;}
-  localStorage.setItem("name",name);
-  document.getElementById("hello").innerText="Xin chào "+name+" 🌸";
+/* ====== DATA ====== */
+function getCouples(){
+    return JSON.parse(localStorage.getItem("couples")||"[]");
 }
 
+function saveCouples(data){
+    localStorage.setItem("couples",JSON.stringify(data));
+}
+
+/* ====== ĐỀ XUẤT ====== */
 function addCouple(){
-  let c = coupleInput.value.trim();
-  if(!c) return;
-  couples.push({name:c,vote:0});
-  localStorage.setItem("couples",JSON.stringify(couples));
-  coupleInput.value="";
-  render();
+    let couples = getCouples();
+    let today = new Date().toDateString();
+
+    let countToday = couples.filter(c=>c.user===currentUser && c.date===today).length;
+    if(countToday>=2){
+        alert("Mỗi ngày chỉ được đề xuất 2 cặp!");
+        return;
+    }
+
+    couples.push({
+        name:coupleInput.value,
+        votes:0,
+        voters:[],
+        user:currentUser,
+        date:today
+    });
+
+    saveCouples(couples);
+    coupleInput.value="";
+    renderCouples();
 }
 
-function vote(i){
-  if(!name){alert("Nhập tên trước khi vote!");return;}
-  let key="voted_"+name;
-  let voted=JSON.parse(localStorage.getItem(key)||"[]");
+/* ====== VOTE ====== */
+function vote(index){
+    let couples = getCouples();
+    let c = couples[index];
 
-  if(voted.includes(couples[i].name)){
-    alert("Bạn đã vote cặp này rồi!");
-    return;
-  }
+    if(c.voters.includes(currentUser)){
+        alert("Bạn đã vote cặp này rồi!");
+        return;
+    }
 
-  couples[i].vote++;
-  voted.push(couples[i].name);
-
-  localStorage.setItem(key,JSON.stringify(voted));
-  localStorage.setItem("couples",JSON.stringify(couples));
-  render();
+    c.votes++;
+    c.voters.push(currentUser);
+    saveCouples(couples);
+    renderCouples();
+    renderTop();
 }
 
-function render(){
-  let list=coupleList;
-  list.innerHTML="";
-  couples.forEach((c,i)=>{
-    list.innerHTML+=`
-    <li>${c.name} — ❤️ ${c.vote}
-    <button class="vote-btn" onclick="vote(${i})">Vote</button></li>`;
-  });
+/* ====== HIỂN THỊ ====== */
+function renderCouples(){
+    let couples = getCouples();
+    coupleList.innerHTML="";
 
-  let top=[...couples].sort((a,b)=>b.vote-a.vote).slice(0,3);
-  topCouple.innerHTML="";
-  top.forEach((c,i)=>{
-    topCouple.innerHTML+=`
-    <div class="rank">🎉 Hạng ${i+1}: ${c.name} (${c.vote} vote)</div>`;
-  });
+    couples.forEach((c,i)=>{
+        coupleList.innerHTML+=`
+        <div class="couple">
+            <b>${c.name}</b><br>
+            ❤️ ${c.votes} vote<br>
+            <button onclick="vote(${i})">Vote</button>
+        </div>`;
+    });
 }
 
-/* ⏱️ LÌ XÌ 1 GIỜ */
-let endTime = localStorage.getItem("lixiEnd");
-if(!endTime){
-  endTime = Date.now()+3600000;
-  localStorage.setItem("lixiEnd",endTime);
-}
-function tick(){
-  let t=endTime-Date.now();
-  if(t<=0){
-    timer.innerText="🎊 ĐÃ CÓ THỂ MỞ LÌ XÌ 🎊";
-  }else{
-    timer.innerText="⏳ Còn "+Math.ceil(t/60000)+" phút";
-  }
-}
-setInterval(tick,1000);
+/* ====== TOP ====== */
+function renderTop(){
+    let couples = getCouples().sort((a,b)=>b.votes-a.votes);
+    topList.innerHTML="";
 
+    if(couples[0]) topList.innerHTML+=`<div class="rank1">🥇 Siêu hợp đôi: ${couples[0].name}</div>`;
+    if(couples[1]) topList.innerHTML+=`<div class="rank2">🥈 Rất hợp đôi: ${couples[1].name}</div>`;
+    if(couples[2]) topList.innerHTML+=`<div class="rank3">🥉 Khá hợp đôi: ${couples[2].name}</div>`;
+}
+
+/* ====== LÌ XÌ ====== */
 function openLixi(){
-  if(Date.now()<endTime){
-    alert("Chưa tới giờ mở lì xì!");
-    return;
-  }
-  let r=Math.random()*100;
-  let res="Xịt 😅";
-  if(r<1) res="🎉 50.000đ";
-  else if(r<10) res="🎊 10.000đ";
-  else if(r<20) res="🧧 5.000đ";
-  else if(r<40) res="🧧 1.000đ";
-  lixiResult.innerText="Bạn nhận được: "+res;
-  endTime=Date.now()+3600000;
-  localStorage.setItem("lixiEnd",endTime);
+    window.open("lixi.html","_blank");
 }
-
-render();
-tick();
 </script>
 
 </body>
