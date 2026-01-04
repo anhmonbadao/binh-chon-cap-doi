@@ -2,76 +2,246 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Lì xì vàng khổng lồ 🧧</title>
+<title>Lì xì Tết 💰</title>
 <style>
 body{
+  margin:0;
+  font-family:Arial;
   background:#b30000;
-  color:white;
-  font-family:sans-serif;
-  text-align:center;
+  color:#fff;
 }
-#timer{
-  font-size:28px;
-  margin:20px;
+.container{
+  max-width:1000px;
+  margin:auto;
+  padding:20px;
 }
-#lixi{
-  font-size:120px;
+h1,h2{text-align:center}
+.box{
+  background:rgba(0,0,0,0.3);
+  padding:15px;
+  border-radius:12px;
+  margin:15px 0;
+}
+button,input{
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  width:100%;
+  margin:5px 0;
+}
+button{
+  background:gold;
+  font-weight:bold;
   cursor:pointer;
-  animation: shake 1s infinite alternate;
+}
+button:disabled{background:#555}
+a{color:#00ccff;font-weight:bold;text-decoration:none}
+.coin{color:gold;font-weight:bold}
+.small{font-size:14px;color:#ddd}
+
+#lock{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.lock-box{
+  background:#800000;
+  padding:20px;
+  border-radius:15px;
+  max-width:500px;
+  width:100%;
+}
+iframe{border-radius:10px}
+
+.lixi-big{
+  font-size:120px;
+  text-align:center;
+  cursor:pointer;
+  animation:none;
 }
 @keyframes shake{
-  from{transform:rotate(-5deg)}
-  to{transform:rotate(5deg)}
+  0%{transform:rotate(0)}
+  25%{transform:rotate(2deg)}
+  50%{transform:rotate(-2deg)}
+  75%{transform:rotate(2deg)}
+  100%{transform:rotate(0)}
 }
-#log{
-  background:white;
-  color:black;
-  width:300px;
-  margin:auto;
-  padding:10px;
-  border-radius:10px;
+
+.flex{
+  display:flex;
+  gap:20px;
 }
+.flex > div{flex:1}
 </style>
 </head>
-
 <body>
-<h1>🧧 LÌ XÌ VÀNG KHỔNG LỒ 🧧</h1>
-<div id="timer">⏳ 60:00</div>
 
-<div id="lixi">🧧</div>
+<!-- 🔒 MÀN VÀO -->
+<div id="lock">
+  <div class="lock-box">
+    <iframe width="100%" height="250"
+      src="https://www.youtube.com/embed/0N46LMV7UDU?autoplay=1&mute=1&controls=1&loop=1"
+      allow="autoplay">
+    </iframe>
 
-<h3>Ăn trọn lì xì</h3>
-<div id="log"></div>
+    <h2>Nhập code để vào 🎊</h2>
+    <p class="small">Code: <b>anhmontongtai</b></p>
+    <input id="nameInput" placeholder="Nhập tên của bạn">
+    <input id="codeInput" placeholder="Nhập code">
+    <button onclick="unlock()">Vào web</button>
+  </div>
+</div>
+
+<!-- 🌸 TRANG CHÍNH -->
+<div id="main" style="display:none" class="container">
+
+<h1>🧧 LÌ XÌ ĐẦU NĂM – PHÁT TÀI PHÁT LỘC 🧧</h1>
+
+<div class="box">
+👤 Người chơi: <b id="playerName"></b><br>
+💰 Lì xì coin: <span class="coin" id="coins">0</span>
+</div>
+
+<div class="box">
+<h2>🧮 Mini game toán (1 câu = 1 coin)</h2>
+<p id="question"></p>
+<input id="answer">
+<button onclick="check()">Trả lời</button>
+</div>
+
+<div class="box">
+<h2>🎁 Đổi bao lì xì nhỏ (20 coin)</h2>
+<button onclick="openSmall()">Mở bao lì xì</button>
+<p id="smallResult"></p>
+</div>
+
+<div class="box">
+<h2 style="color:#00ccff">
+<a href="#big">🧧 MỞ LÌ XÌ TIỀN ĐẦY TAY 🧧</a>
+</h2>
+</div>
+
+<!-- 🧧 LÌ XÌ LỚN -->
+<div id="big" class="box">
+<h2>🧧 Lì xì vàng khổng lồ 🧧</h2>
+<p>⏱️ Thời gian còn lại: <span id="timer"></span></p>
+
+<div class="flex">
+  <div>
+    <div id="bigLixi" class="lixi-big" onclick="clickBig()">🧧</div>
+    <p id="bigResult" style="text-align:center"></p>
+  </div>
+
+  <div>
+    <h3>🎉 Ăn trọn lì xì</h3>
+    <div id="winners"></div>
+  </div>
+</div>
+</div>
+
+</div>
 
 <script>
-let time = 3600;
-let opened = false;
+const CODE="anhmontongtai";
+let user=JSON.parse(localStorage.getItem("user")||"null");
+let winners=JSON.parse(localStorage.getItem("winners")||"[]");
 
-setInterval(()=>{
-  if(time>0){
-    time--;
-    let m=Math.floor(time/60);
-    let s=time%60;
-    document.getElementById("timer").innerText=
-      "⏳ "+m+":"+(s<10?"0"+s:s);
+function unlock(){
+  if(codeInput.value!==CODE) return alert("Sai code!");
+  if(!nameInput.value) return alert("Nhập tên!");
+  user={
+    name:nameInput.value,
+    coins:0
+  };
+  localStorage.setItem("user",JSON.stringify(user));
+  lock.style.display="none";
+  main.style.display="block";
+  startGame();
+}
+
+function startGame(){
+  playerName.innerText=user.name;
+  updateCoins();
+  newQuestion();
+  startTimer();
+  renderWinners();
+}
+
+function updateCoins(){
+  coins.innerText=user.coins;
+  localStorage.setItem("user",JSON.stringify(user));
+}
+
+let a,b,ans;
+function newQuestion(){
+  a=Math.floor(Math.random()*10);
+  b=Math.floor(Math.random()*10);
+  ans=a+b;
+  question.innerText=`${a} + ${b} = ?`;
+}
+
+function check(){
+  if(parseInt(answer.value)===ans){
+    user.coins++;
+    updateCoins();
   }
-},1000);
+  answer.value="";
+  newQuestion();
+}
 
-document.getElementById("lixi").onclick=()=>{
-  if(time>0 || opened) return;
-  opened=true;
-
+function openSmall(){
+  if(user.coins<20) return;
+  user.coins-=20;
+  updateCoins();
   let r=Math.random()*100;
-  let prize="Không trúng";
+  if(r<80) smallResult.innerText="😅 Không trúng";
+  else if(r<90) smallResult.innerText="🎉 Trúng 1.000đ";
+  else if(r<99.5) smallResult.innerText="🎉 Trúng 5.000đ";
+  else smallResult.innerText="🔥 Trúng 10.000đ";
+}
 
-  if(r<1) prize="🎉 50.000đ";
-  else if(r<10) prize="🎊 10.000đ";
-  else if(r<20) prize="💰 5.000đ";
-  else if(r<40) prize="💵 1.000đ";
+let time=3600;
+let canOpen=false;
+function startTimer(){
+  setInterval(()=>{
+    if(time>0){
+      time--;
+      timer.innerText=`${Math.floor(time/60)}:${time%60}`;
+    }else{
+      canOpen=true;
+      bigLixi.style.animation="shake 0.3s infinite";
+    }
+  },1000);
+}
 
-  document.getElementById("log").innerHTML +=
-    `<p>Người chơi trúng: <b>${prize}</b></p>`;
-};
+function clickBig(){
+  if(!canOpen) return;
+  let r=Math.random()*100;
+  let prize=0;
+  if(r<60) prize=0;
+  else if(r<80) prize=1000;
+  else if(r<90) prize=5000;
+  else if(r<99) prize=10000;
+  else prize=50000;
+
+  bigResult.innerText= prize?`🎉 Trúng ${prize.toLocaleString()}đ`:"😅 Không trúng";
+  if(prize){
+    winners.unshift({name:user.name,prize});
+    winners=winners.slice(0,10);
+    localStorage.setItem("winners",JSON.stringify(winners));
+    renderWinners();
+  }
+  canOpen=false;
+  bigLixi.style.animation="none";
+  time=3600;
+}
+
+function renderWinners(){
+  winnersDiv=winners.map(w=>`<p>🧧 ${w.name} – ${w.prize.toLocaleString()}đ</p>`).join("");
+  winners.innerHTML=winnersDiv;
+}
 </script>
+
 </body>
 </html>
