@@ -5,135 +5,164 @@
 <title>Câu cá vạn cân</title>
 
 <style>
+*{box-sizing:border-box}
 body{
-  margin:0;
-  font-family: Arial, sans-serif;
+    margin:0;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#000;
+    color:#fff;
 }
 
-/* ====== LOGIN ====== */
+/* ===== LOGIN ===== */
 #login{
-  height:100vh;
-  background:linear-gradient(#0aa,#0066cc);
-  display:flex;
-  justify-content:center;
-  align-items:center;
+    position:fixed;
+    inset:0;
+    background:linear-gradient(#0aa,#046);
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
 .login-box{
-  background:rgba(255,255,255,0.9);
-  padding:30px;
-  border-radius:12px;
-  width:300px;
-  text-align:center;
+    background:rgba(0,0,0,.45);
+    padding:30px;
+    border-radius:16px;
+    width:320px;
+    text-align:center;
 }
 
 .login-box h1{
-  margin-bottom:20px;
-  color:#0066cc;
+    margin:0 0 20px;
+    font-size:28px;
 }
 
 .login-box input{
-  width:100%;
-  padding:10px;
-  margin:8px 0;
-  border-radius:6px;
-  border:1px solid #ccc;
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border-radius:10px;
+    border:none;
+    font-size:16px;
 }
 
 .login-box button{
-  width:100%;
-  padding:10px;
-  margin-top:10px;
-  background:#ffcc00;
-  border:none;
-  border-radius:6px;
-  font-size:16px;
-  cursor:pointer;
+    margin-top:10px;
+    padding:12px;
+    width:100%;
+    border:none;
+    border-radius:10px;
+    background:#ffd700;
+    font-weight:bold;
+    cursor:pointer;
 }
 
-/* ====== GAME ====== */
+/* ===== GAME ===== */
 #game{
-  display:none;
-  height:100vh;
-  background:#222;
-  overflow:hidden;
-  position:relative;
+    display:none;
+    width:100vw;
+    height:100vh;
+    background:linear-gradient(#555,#222);
+    overflow:hidden;
+    position:relative;
 }
 
-/* ảnh nền game */
-#scene{
-  position:absolute;
-  inset:0;
-  background:url("YOUR_IMAGE.png") center/cover no-repeat;
+/* xe */
+.vehicle{
+    position:absolute;
+    bottom:80px;
+    left:40%;
+    display:flex;
+    align-items:center;
+    animation:move 2s infinite linear;
+}
+
+/* thân xe */
+.body{
+    width:180px;
+    height:60px;
+    background:#8b5a2b;
+    border-radius:12px;
 }
 
 /* bánh xe */
 .wheel{
-  position:absolute;
-  bottom:90px;
-  width:90px;
-  height:90px;
-  animation:spin 1s linear infinite;
+    width:46px;
+    height:46px;
+    background:#111;
+    border:6px solid #555;
+    border-radius:50%;
+    margin:0 10px;
+    animation:spin .6s linear infinite;
 }
 
-/* chỉnh vị trí bánh */
-#wheel1{ left:350px; }
-#wheel2{ left:520px; }
+/* nhân vật */
+.char{
+    position:absolute;
+    top:-60px;
+    left:30px;
+    width:50px;
+    height:50px;
+    background:#ffccaa;
+    border-radius:50%;
+    animation:shake .25s infinite;
+}
 
 @keyframes spin{
-  from{transform:rotate(0deg)}
-  to{transform:rotate(360deg)}
-}
-
-/* nhân vật rung */
-.character{
-  position:absolute;
-  bottom:170px;
-  left:420px;
-  width:120px;
-  animation:shake 0.25s infinite alternate;
+    to{transform:rotate(360deg)}
 }
 
 @keyframes shake{
-  from{transform:translateY(0)}
-  to{transform:translateY(-2px)}
+    0%{transform:translateY(0)}
+    50%{transform:translateY(2px)}
+    100%{transform:translateY(0)}
+}
+
+@keyframes move{
+    0%{transform:translateX(0)}
+    100%{transform:translateX(6px)}
+}
+
+/* tên người chơi */
+.player{
+    position:absolute;
+    top:20px;
+    left:20px;
+    font-size:18px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- ===== LOGIN ===== -->
+<!-- LOGIN -->
 <div id="login">
-  <div class="login-box">
-    <h1>CÂU CÁ VẠN CÂN</h1>
-    <input id="name" placeholder="Tên người chơi">
-    <input type="password" placeholder="Mật khẩu">
-    <button onclick="login()">OK</button>
-  </div>
+    <div class="login-box">
+        <h1>🎣 CÂU CÁ VẠN CÂN</h1>
+        <input id="name" placeholder="Tên người chơi">
+        <input type="password" placeholder="Mật khẩu">
+        <button onclick="start()">OK</button>
+    </div>
 </div>
 
-<!-- ===== GAME ===== -->
+<!-- GAME -->
 <div id="game">
-  <div id="scene"></div>
+    <div class="player" id="playerName"></div>
 
-  <!-- bánh xe -->
-  <img src="wheel.png" class="wheel" id="wheel1">
-  <img src="wheel.png" class="wheel" id="wheel2">
-
-  <!-- nhân vật -->
-  <img src="character.png" class="character">
+    <div class="vehicle">
+        <div class="wheel"></div>
+        <div class="body"></div>
+        <div class="wheel"></div>
+        <div class="char"></div>
+    </div>
 </div>
 
 <script>
-function login(){
-  const name = document.getElementById("name").value.trim();
-  if(!name){
-    alert("Nhập tên đã!");
-    return;
-  }
-  document.getElementById("login").style.display="none";
-  document.getElementById("game").style.display="block";
+function start(){
+    const n=document.getElementById("name").value.trim();
+    if(!n){alert("Nhập tên đã");return;}
+    document.getElementById("login").style.display="none";
+    document.getElementById("game").style.display="block";
+    document.getElementById("playerName").innerText="👤 "+n;
 }
 </script>
 
