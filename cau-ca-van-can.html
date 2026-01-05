@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Câu cá vạn cân</title>
+
+<style>
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+}
+
+/* ====== LOGIN ====== */
+#login{
+  height:100vh;
+  background:linear-gradient(#0aa,#0066cc);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.login-box{
+  background:rgba(255,255,255,0.9);
+  padding:30px;
+  border-radius:12px;
+  width:300px;
+  text-align:center;
+}
+
+.login-box h1{
+  margin-bottom:20px;
+  color:#0066cc;
+}
+
+.login-box input{
+  width:100%;
+  padding:10px;
+  margin:8px 0;
+  border-radius:6px;
+  border:1px solid #ccc;
+}
+
+.login-box button{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  background:#ffcc00;
+  border:none;
+  border-radius:6px;
+  font-size:16px;
+  cursor:pointer;
+}
+
+/* ====== GAME ====== */
+#game{
+  display:none;
+  height:100vh;
+  background:#222;
+  overflow:hidden;
+  position:relative;
+}
+
+/* ảnh nền game */
+#scene{
+  position:absolute;
+  inset:0;
+  background:url("YOUR_IMAGE.png") center/cover no-repeat;
+}
+
+/* bánh xe */
+.wheel{
+  position:absolute;
+  bottom:90px;
+  width:90px;
+  height:90px;
+  animation:spin 1s linear infinite;
+}
+
+/* chỉnh vị trí bánh */
+#wheel1{ left:350px; }
+#wheel2{ left:520px; }
+
+@keyframes spin{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
+
+/* nhân vật rung */
+.character{
+  position:absolute;
+  bottom:170px;
+  left:420px;
+  width:120px;
+  animation:shake 0.25s infinite alternate;
+}
+
+@keyframes shake{
+  from{transform:translateY(0)}
+  to{transform:translateY(-2px)}
+}
+</style>
+</head>
+
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div id="login">
+  <div class="login-box">
+    <h1>CÂU CÁ VẠN CÂN</h1>
+    <input id="name" placeholder="Tên người chơi">
+    <input type="password" placeholder="Mật khẩu">
+    <button onclick="login()">OK</button>
+  </div>
+</div>
+
+<!-- ===== GAME ===== -->
+<div id="game">
+  <div id="scene"></div>
+
+  <!-- bánh xe -->
+  <img src="wheel.png" class="wheel" id="wheel1">
+  <img src="wheel.png" class="wheel" id="wheel2">
+
+  <!-- nhân vật -->
+  <img src="character.png" class="character">
+</div>
+
+<script>
+function login(){
+  const name = document.getElementById("name").value.trim();
+  if(!name){
+    alert("Nhập tên đã!");
+    return;
+  }
+  document.getElementById("login").style.display="none";
+  document.getElementById("game").style.display="block";
+}
+</script>
+
+</body>
+</html>
