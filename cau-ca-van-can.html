@@ -1,170 +1,71 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<title>Câu cá vạn cân</title>
+  <meta charset="UTF-8">
+  <title>Đăng nhập</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: #111;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      color: white;
+    }
 
-<style>
-*{box-sizing:border-box}
-body{
-    margin:0;
-    font-family:Arial,Helvetica,sans-serif;
-    background:#000;
-    color:#fff;
-}
+    #login, #imageBox {
+      display: none;
+      text-align: center;
+    }
 
-/* ===== LOGIN ===== */
-#login{
-    position:fixed;
-    inset:0;
-    background:linear-gradient(#0aa,#046);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
+    #login {
+      display: block;
+    }
 
-.login-box{
-    background:rgba(0,0,0,.45);
-    padding:30px;
-    border-radius:16px;
-    width:320px;
-    text-align:center;
-}
+    input {
+      display: block;
+      margin: 10px auto;
+      padding: 10px;
+      width: 200px;
+      font-size: 16px;
+    }
 
-.login-box h1{
-    margin:0 0 20px;
-    font-size:28px;
-}
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
 
-.login-box input{
-    width:100%;
-    padding:12px;
-    margin:10px 0;
-    border-radius:10px;
-    border:none;
-    font-size:16px;
-}
-
-.login-box button{
-    margin-top:10px;
-    padding:12px;
-    width:100%;
-    border:none;
-    border-radius:10px;
-    background:#ffd700;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-/* ===== GAME ===== */
-#game{
-    display:none;
-    width:100vw;
-    height:100vh;
-    background:linear-gradient(#555,#222);
-    overflow:hidden;
-    position:relative;
-}
-
-/* xe */
-.vehicle{
-    position:absolute;
-    bottom:80px;
-    left:40%;
-    display:flex;
-    align-items:center;
-    animation:move 2s infinite linear;
-}
-
-/* thân xe */
-.body{
-    width:180px;
-    height:60px;
-    background:#8b5a2b;
-    border-radius:12px;
-}
-
-/* bánh xe */
-.wheel{
-    width:46px;
-    height:46px;
-    background:#111;
-    border:6px solid #555;
-    border-radius:50%;
-    margin:0 10px;
-    animation:spin .6s linear infinite;
-}
-
-/* nhân vật */
-.char{
-    position:absolute;
-    top:-60px;
-    left:30px;
-    width:50px;
-    height:50px;
-    background:#ffccaa;
-    border-radius:50%;
-    animation:shake .25s infinite;
-}
-
-@keyframes spin{
-    to{transform:rotate(360deg)}
-}
-
-@keyframes shake{
-    0%{transform:translateY(0)}
-    50%{transform:translateY(2px)}
-    100%{transform:translateY(0)}
-}
-
-@keyframes move{
-    0%{transform:translateX(0)}
-    100%{transform:translateX(6px)}
-}
-
-/* tên người chơi */
-.player{
-    position:absolute;
-    top:20px;
-    left:20px;
-    font-size:18px;
-}
-</style>
+    img {
+      max-width: 100vw;
+      max-height: 100vh;
+    }
+  </style>
 </head>
-
 <body>
 
-<!-- LOGIN -->
-<div id="login">
-    <div class="login-box">
-        <h1>🎣 CÂU CÁ VẠN CÂN</h1>
-        <input id="name" placeholder="Tên người chơi">
-        <input type="password" placeholder="Mật khẩu">
-        <button onclick="start()">OK</button>
-    </div>
-</div>
+  <!-- FORM ĐĂNG NHẬP -->
+  <div id="login">
+    <h2>Đăng nhập</h2>
+    <input type="text" id="user" placeholder="Tên đăng nhập">
+    <input type="password" id="pass" placeholder="Mật khẩu">
+    <button onclick="login()">OK</button>
+  </div>
 
-<!-- GAME -->
-<div id="game">
-    <div class="player" id="playerName"></div>
+  <!-- ẢNH -->
+  <div id="imageBox">
+    <img src="anh.jpg" alt="ảnh">
+  </div>
 
-    <div class="vehicle">
-        <div class="wheel"></div>
-        <div class="body"></div>
-        <div class="wheel"></div>
-        <div class="char"></div>
-    </div>
-</div>
-
-<script>
-function start(){
-    const n=document.getElementById("name").value.trim();
-    if(!n){alert("Nhập tên đã");return;}
-    document.getElementById("login").style.display="none";
-    document.getElementById("game").style.display="block";
-    document.getElementById("playerName").innerText="👤 "+n;
-}
-</script>
+  <script>
+    function login() {
+      // KHÔNG CHECK ĐÚNG SAI – BẤM OK LÀ VÀO
+      document.getElementById("login").style.display = "none";
+      document.getElementById("imageBox").style.display = "block";
+    }
+  </script>
 
 </body>
 </html>
