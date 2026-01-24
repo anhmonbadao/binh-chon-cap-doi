@@ -1,71 +1,139 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>Đăng nhập</title>
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      background: #111;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: Arial, sans-serif;
-      color: white;
-    }
-
-    #login, #imageBox {
-      display: none;
-      text-align: center;
-    }
-
-    #login {
-      display: block;
-    }
-
-    input {
-      display: block;
-      margin: 10px auto;
-      padding: 10px;
-      width: 200px;
-      font-size: 16px;
-    }
-
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    img {
-      max-width: 100vw;
-      max-height: 100vh;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>English HSG Test - Grade 6</title>
+<style>
+body{font-family:Arial;background:#f5f7fb;padding:20px}
+h1,h2{color:#222}
+.question{background:#fff;padding:15px;margin:12px 0;border-radius:10px}
+.option{padding:8px;border:2px solid #ccc;border-radius:20px;margin:5px 0;cursor:pointer;display:inline-block}
+.option.selected{border-color:#007bff}
+.correct{background:#c8f7c5}
+.wrong{background:#f7c5c5}
+.right-answer{background:#fff3cd}
+input[type=text]{width:100%;border:none;border-bottom:2px solid #000;font-size:16px;padding:5px}
+button{padding:12px 25px;font-size:16px;border:none;border-radius:8px;background:#007bff;color:#fff;cursor:pointer}
+button:hover{opacity:0.9}
+</style>
 </head>
+
 <body>
 
-  <!-- FORM ĐĂNG NHẬP -->
-  <div id="login">
-    <h2>Đăng nhập</h2>
-    <input type="text" id="user" placeholder="Tên đăng nhập">
-    <input type="password" id="pass" placeholder="Mật khẩu">
-    <button onclick="login()">OK</button>
-  </div>
+<h1>📝 English HSG Test – Grade 6</h1>
 
-  <!-- ẢNH -->
-  <div id="imageBox">
-    <img src="anh.jpg" alt="ảnh">
-  </div>
+<div id="quiz"></div>
 
-  <script>
-    function login() {
-      // KHÔNG CHECK ĐÚNG SAI – BẤM OK LÀ VÀO
-      document.getElementById("login").style.display = "none";
-      document.getElementById("imageBox").style.display = "block";
-    }
-  </script>
+<button onclick="submitQuiz()">NỘP BÀI</button>
+
+<script>
+let questions = [];
+
+// ===== TRẮC NGHIỆM 60 CÂU =====
+for(let i=1;i<=60;i++){
+questions.push({
+type:"mc",
+q:`Question ${i}: Choose the correct answer.`,
+options:["A","B","C","D"],
+answer:"B"
+});
+}
+
+// ===== TRUE / FALSE 20 CÂU =====
+for(let i=61;i<=80;i++){
+questions.push({
+type:"tf",
+q:`Question ${i}: This statement is TRUE.`,
+options:["True","False"],
+answer:"True"
+});
+}
+
+// ===== NGHE 2 BÀI – 5 CÂU / BÀI =====
+questions.push({type:"audio",src:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"});
+for(let i=81;i<=85;i++){
+questions.push({
+type:"mc",
+q:`Listening 1 – Question ${i}`,
+options:["A","B","C","D"],
+answer:"C"
+});
+}
+
+questions.push({type:"audio",src:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"});
+for(let i=86;i<=90;i++){
+questions.push({
+type:"mc",
+q:`Listening 2 – Question ${i}`,
+options:["A","B","C","D"],
+answer:"A"
+});
+}
+
+// ===== PHẦN VIẾT =====
+questions.push({
+type:"write",
+q:"Rewrite the sentence: She likes apples.",
+answer:"She likes apples."
+});
+
+const quizDiv=document.getElementById("quiz");
+
+questions.forEach((q,i)=>{
+if(q.type==="audio"){
+quizDiv.innerHTML+=`<h2>🎧 Listening</h2><audio controls src="${q.src}"></audio>`;
+return;
+}
+
+let html=`<div class="question"><b>${q.q}</b><br>`;
+
+if(q.type==="write"){
+html+=`<input type="text" data-answer="${q.answer}">`;
+}else{
+q.options.forEach(op=>{
+html+=`<div class="option" onclick="selectOption(this)" data-answer="${q.answer}">${op}</div>`;
+});
+}
+html+=`</div>`;
+quizDiv.innerHTML+=html;
+});
+
+function selectOption(el){
+let parent=el.parentElement;
+parent.querySelectorAll(".option").forEach(o=>o.classList.remove("selected"));
+el.classList.add("selected");
+}
+
+function submitQuiz(){
+document.querySelectorAll(".question").forEach(q=>{
+let opt=q.querySelector(".option.selected");
+let input=q.querySelector("input");
+
+if(opt){
+if(opt.innerText===opt.dataset.answer){
+opt.classList.add("correct");
+}else{
+opt.classList.add("wrong");
+q.querySelectorAll(".option").forEach(o=>{
+if(o.innerText===o.dataset.answer)o.classList.add("right-answer");
+});
+}
+}
+
+if(input){
+if(input.value.trim().toLowerCase()===input.dataset.answer.toLowerCase()){
+input.style.background="#c8f7c5";
+}else{
+input.style.background="#f7c5c5";
+let p=document.createElement("p");
+p.innerHTML="✔ Đáp án đúng: "+input.dataset.answer;
+q.appendChild(p);
+}
+}
+});
+alert("Đã chấm xong!");
+}
+</script>
 
 </body>
 </html>
